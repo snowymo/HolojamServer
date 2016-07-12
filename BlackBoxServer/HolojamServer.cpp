@@ -351,11 +351,11 @@ public:
 			}
 			else {
 				bool set_head = true;
-				for (PacketGroup *pg : packet_groups) {
-					if (pg->label != newHead->label) {
-						set_head = false;
-					}
-				}
+				//for (PacketGroup *pg : packet_groups) {
+				//	if (pg->label != newHead->label) {
+				//		set_head = false;
+				//	}
+				//}
 				if (set_head) {
 					head = newHead;
 				}
@@ -432,11 +432,14 @@ int PacketReceivingThread() {
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(1615);
-	int err = inet_pton(AF_INET, IP_ADDR.c_str(), &addr.sin_addr); // S_ADDR of our IP for the WiFi interface
+	addr.sin_addr.s_addr = INADDR_ANY;
+	/*
+	int err = inet_pton(AF_INET, INADDR_ANY, &addr.sin_addr); // S_ADDR of our IP for the WiFi interface
 	//int err = inet_pton(AF_INET, "128.122.47.25", &addr.sin_addr); // S_ADDR of our IP for the WiFi interface
 	if (err == SOCKET_ERROR) {
 		printf("error assigning address\n");
 	}
+	*/
 
 	int conn = ::bind(soc, (sockaddr*)&addr, sizeof(addr));
 	if (conn == SOCKET_ERROR){
@@ -449,19 +452,21 @@ int PacketReceivingThread() {
 	char *buf = (char*)malloc(sizeof(char) * len);
 	int flags = 0;
 
+	/* 
 	sockaddr_in from_addr;
 	from_addr.sin_family = AF_INET;
 	from_addr.sin_port = htons(1615);
-	err = inet_pton(AF_INET, "172.22.31.129", &from_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
+	err = inet_pton(AF_INET, "192.168.1.48", &from_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
 	//err = inet_pton(AF_INET, "128.122.47.25", &from_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
 	if (err == SOCKET_ERROR) {
 		printf("error assigning address\n");
 	}
+	*/
 	
 	while (true) {
-		int addr_len = sizeof(from_addr);
-		int recv_status = recvfrom(soc, buf, len, flags, (sockaddr*)&from_addr, &addr_len);
-		if (recv_status == SOCKET_ERROR){
+		int addr_len = sizeof(addr);
+		int recv_status = recvfrom(soc, buf, len, flags, (sockaddr*)&addr, &addr_len);
+		if (recv_status == SOCKET_ERROR) {
 			std::cout << "Error in Receiving: " << WSAGetLastError() << std::endl;
 		}
 
@@ -469,7 +474,7 @@ int PacketReceivingThread() {
 		update->ParseFromArray(buf, recv_status);
 		delete recvUpdate;
 		recvUpdate = update;
-		// cout << "received " << recvUpdate->live_objects_size() << " objects." << endl;
+		cout << "received " << recvUpdate->live_objects_size() << " objects." << endl;
 		PacketGroup *pg = new PacketGroup(recvUpdate->time(), false, true, update->label());
 		if (recvUpdate != NULL) {
 			for (int i = 0; i < recvUpdate->live_objects_size(); i++) {
