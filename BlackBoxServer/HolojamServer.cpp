@@ -225,10 +225,10 @@ public:
 	}
 
 	void addLiveObject(update_protocol_v3::LiveObject o, bool lhs) {
-		addLiveObject(o.label(), true, o.x(), o.y(), o.z(), o.qx(), o.qy(), o.qz(), o.qw(), lhs, o.button_bits());
+		addLiveObject(o.label(), true, o.x(), o.y(), o.z(), o.qx(), o.qy(), o.qz(), o.qw(), lhs, o.button_bits(), o.extra_data());
 	}
 
-	void addLiveObject(string label, bool tracking_valid, float x, float y, float z, float qx, float qy, float qz, float qw, bool lhs, int button_bits) {
+	void addLiveObject(string label, bool tracking_valid, float x, float y, float z, float qx, float qy, float qz, float qw, bool lhs, int button_bits, string extra_data) {
 		update_protocol_v3::LiveObject *liveObj = new update_protocol_v3::LiveObject();
 		
 		liveObj->set_label(label);
@@ -265,18 +265,7 @@ public:
 		//	update_protocol_v3::AxisButton * axisBtn = liveObj->add_axis_buttons();
 		//}
 			
-		// not sure about the repeated extradata
-		int extra_data_size = liveObj->extra_data_size();
-		for (int i = 0; i < extra_data_size; i++) {
-			update_protocol_v3::ExtraData * extraDt = liveObj->add_extra_data();
-			extraDt->set_label(liveObj->extra_data(i).label());
-			extraDt->set_bool_val(liveObj->extra_data(i).bool_val());
-			extraDt->set_int_val(liveObj->extra_data(i).int_val());
-			extraDt->set_float_val(liveObj->extra_data(i).float_val());
-			extraDt->set_double_val(liveObj->extra_data(i).double_val());
-			extraDt->set_string_val(liveObj->extra_data(i).string_val());
-			extraDt->set_bytes_val(liveObj->extra_data(i).bytes_val());
-		}
+		liveObj->set_extra_data(extra_data);
 
 		update_protocol_v3::Update *current_packet = packets.back();
 		if (!(current_packet->ByteSize() + liveObj->ByteSize() < max_packet_bytes)) {
@@ -515,8 +504,10 @@ void HandleNatNetPacket(sFrameOfMocapData *data, void *pUserData)
 			rb.x, rb.y, rb.z,
 			rb.qx, rb.qy, rb.qz, rb.qw,
 			true,
-			button_bits);
+			button_bits,
+			"");
 	}
+	/*
 	for (int i = 0; i < data->nSkeletons; i++) {
 		for (int j = 0; j < data->Skeletons[i].nRigidBodies; j++) {
 			sRigidBodyData rb = data->Skeletons[i].RigidBodyData[j];
@@ -525,9 +516,11 @@ void HandleNatNetPacket(sFrameOfMocapData *data, void *pUserData)
 				rb.x, rb.y, rb.z,
 				rb.qx, rb.qy, rb.qz, rb.qw,
 				true,
-				0);
+				0,
+				"");
 		}
 	}
+	*/
 	/*
 	for (int i = 0; i < data->nOtherMarkers; i++) {
 		float* m = data->OtherMarkers[i];

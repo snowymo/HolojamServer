@@ -37,188 +37,10 @@ void protobuf_AssignDesc_update_5fprotocol_5fv3_2eproto();
 void protobuf_ShutdownFile_update_5fprotocol_5fv3_2eproto();
 
 class AxisButton;
-class ExtraData;
 class LiveObject;
 class Update;
 
 // ===================================================================
-
-class ExtraData : public ::google::protobuf::Message {
- public:
-  ExtraData();
-  virtual ~ExtraData();
-
-  ExtraData(const ExtraData& from);
-
-  inline ExtraData& operator=(const ExtraData& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const ExtraData& default_instance();
-
-  void Swap(ExtraData* other);
-
-  // implements Message ----------------------------------------------
-
-  inline ExtraData* New() const { return New(NULL); }
-
-  ExtraData* New(::google::protobuf::Arena* arena) const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const ExtraData& from);
-  void MergeFrom(const ExtraData& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  void InternalSwap(ExtraData* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return _internal_metadata_.arena();
-  }
-  inline void* MaybeArenaPtr() const {
-    return _internal_metadata_.raw_arena_ptr();
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // optional string label = 1;
-  bool has_label() const;
-  void clear_label();
-  static const int kLabelFieldNumber = 1;
-  const ::std::string& label() const;
-  void set_label(const ::std::string& value);
-  void set_label(const char* value);
-  void set_label(const char* value, size_t size);
-  ::std::string* mutable_label();
-  ::std::string* release_label();
-  void set_allocated_label(::std::string* label);
-
-  // optional int32 int_val = 2;
-  bool has_int_val() const;
-  void clear_int_val();
-  static const int kIntValFieldNumber = 2;
-  ::google::protobuf::int32 int_val() const;
-  void set_int_val(::google::protobuf::int32 value);
-
-  // optional float float_val = 3;
-  bool has_float_val() const;
-  void clear_float_val();
-  static const int kFloatValFieldNumber = 3;
-  float float_val() const;
-  void set_float_val(float value);
-
-  // optional double double_val = 4;
-  bool has_double_val() const;
-  void clear_double_val();
-  static const int kDoubleValFieldNumber = 4;
-  double double_val() const;
-  void set_double_val(double value);
-
-  // optional string string_val = 5;
-  bool has_string_val() const;
-  void clear_string_val();
-  static const int kStringValFieldNumber = 5;
-  const ::std::string& string_val() const;
-  void set_string_val(const ::std::string& value);
-  void set_string_val(const char* value);
-  void set_string_val(const char* value, size_t size);
-  ::std::string* mutable_string_val();
-  ::std::string* release_string_val();
-  void set_allocated_string_val(::std::string* string_val);
-
-  // optional bool bool_val = 6;
-  bool has_bool_val() const;
-  void clear_bool_val();
-  static const int kBoolValFieldNumber = 6;
-  bool bool_val() const;
-  void set_bool_val(bool value);
-
-  // optional bytes bytes_val = 7;
-  bool has_bytes_val() const;
-  void clear_bytes_val();
-  static const int kBytesValFieldNumber = 7;
-  const ::std::string& bytes_val() const;
-  void set_bytes_val(const ::std::string& value);
-  void set_bytes_val(const char* value);
-  void set_bytes_val(const void* value, size_t size);
-  ::std::string* mutable_bytes_val();
-  ::std::string* release_bytes_val();
-  void set_allocated_bytes_val(::std::string* bytes_val);
-
-  // repeated .update_protocol_v3.ExtraData extra_val = 8;
-  int extra_val_size() const;
-  void clear_extra_val();
-  static const int kExtraValFieldNumber = 8;
-  const ::update_protocol_v3::ExtraData& extra_val(int index) const;
-  ::update_protocol_v3::ExtraData* mutable_extra_val(int index);
-  ::update_protocol_v3::ExtraData* add_extra_val();
-  ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData >*
-      mutable_extra_val();
-  const ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData >&
-      extra_val() const;
-
-  // @@protoc_insertion_point(class_scope:update_protocol_v3.ExtraData)
- private:
-  inline void set_has_label();
-  inline void clear_has_label();
-  inline void set_has_int_val();
-  inline void clear_has_int_val();
-  inline void set_has_float_val();
-  inline void clear_has_float_val();
-  inline void set_has_double_val();
-  inline void clear_has_double_val();
-  inline void set_has_string_val();
-  inline void clear_has_string_val();
-  inline void set_has_bool_val();
-  inline void clear_has_bool_val();
-  inline void set_has_bytes_val();
-  inline void clear_has_bytes_val();
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::uint32 _has_bits_[1];
-  mutable int _cached_size_;
-  ::google::protobuf::internal::ArenaStringPtr label_;
-  ::google::protobuf::int32 int_val_;
-  float float_val_;
-  double double_val_;
-  ::google::protobuf::internal::ArenaStringPtr string_val_;
-  ::google::protobuf::internal::ArenaStringPtr bytes_val_;
-  ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData > extra_val_;
-  bool bool_val_;
-  friend void  protobuf_AddDesc_update_5fprotocol_5fv3_2eproto();
-  friend void protobuf_AssignDesc_update_5fprotocol_5fv3_2eproto();
-  friend void protobuf_ShutdownFile_update_5fprotocol_5fv3_2eproto();
-
-  void InitAsDefaultInstance();
-  static ExtraData* default_instance_;
-};
-// -------------------------------------------------------------------
 
 class AxisButton : public ::google::protobuf::Message {
  public:
@@ -395,66 +217,73 @@ class LiveObject : public ::google::protobuf::Message {
   ::std::string* release_label();
   void set_allocated_label(::std::string* label);
 
-  // optional float x = 2;
+  // optional bool is_tracked = 2;
+  bool has_is_tracked() const;
+  void clear_is_tracked();
+  static const int kIsTrackedFieldNumber = 2;
+  bool is_tracked() const;
+  void set_is_tracked(bool value);
+
+  // optional float x = 3;
   bool has_x() const;
   void clear_x();
-  static const int kXFieldNumber = 2;
+  static const int kXFieldNumber = 3;
   float x() const;
   void set_x(float value);
 
-  // optional float y = 3;
+  // optional float y = 4;
   bool has_y() const;
   void clear_y();
-  static const int kYFieldNumber = 3;
+  static const int kYFieldNumber = 4;
   float y() const;
   void set_y(float value);
 
-  // optional float z = 4;
+  // optional float z = 5;
   bool has_z() const;
   void clear_z();
-  static const int kZFieldNumber = 4;
+  static const int kZFieldNumber = 5;
   float z() const;
   void set_z(float value);
 
-  // optional float qx = 5;
+  // optional float qx = 6;
   bool has_qx() const;
   void clear_qx();
-  static const int kQxFieldNumber = 5;
+  static const int kQxFieldNumber = 6;
   float qx() const;
   void set_qx(float value);
 
-  // optional float qy = 6;
+  // optional float qy = 7;
   bool has_qy() const;
   void clear_qy();
-  static const int kQyFieldNumber = 6;
+  static const int kQyFieldNumber = 7;
   float qy() const;
   void set_qy(float value);
 
-  // optional float qz = 7;
+  // optional float qz = 8;
   bool has_qz() const;
   void clear_qz();
-  static const int kQzFieldNumber = 7;
+  static const int kQzFieldNumber = 8;
   float qz() const;
   void set_qz(float value);
 
-  // optional float qw = 8;
+  // optional float qw = 9;
   bool has_qw() const;
   void clear_qw();
-  static const int kQwFieldNumber = 8;
+  static const int kQwFieldNumber = 9;
   float qw() const;
   void set_qw(float value);
 
-  // optional int32 button_bits = 9;
+  // optional int32 button_bits = 10;
   bool has_button_bits() const;
   void clear_button_bits();
-  static const int kButtonBitsFieldNumber = 9;
+  static const int kButtonBitsFieldNumber = 10;
   ::google::protobuf::int32 button_bits() const;
   void set_button_bits(::google::protobuf::int32 value);
 
-  // repeated .update_protocol_v3.AxisButton axis_buttons = 10;
+  // repeated .update_protocol_v3.AxisButton axis_buttons = 11;
   int axis_buttons_size() const;
   void clear_axis_buttons();
-  static const int kAxisButtonsFieldNumber = 10;
+  static const int kAxisButtonsFieldNumber = 11;
   const ::update_protocol_v3::AxisButton& axis_buttons(int index) const;
   ::update_protocol_v3::AxisButton* mutable_axis_buttons(int index);
   ::update_protocol_v3::AxisButton* add_axis_buttons();
@@ -463,22 +292,24 @@ class LiveObject : public ::google::protobuf::Message {
   const ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::AxisButton >&
       axis_buttons() const;
 
-  // repeated .update_protocol_v3.ExtraData extra_data = 11;
-  int extra_data_size() const;
+  // optional string extra_data = 12;
+  bool has_extra_data() const;
   void clear_extra_data();
-  static const int kExtraDataFieldNumber = 11;
-  const ::update_protocol_v3::ExtraData& extra_data(int index) const;
-  ::update_protocol_v3::ExtraData* mutable_extra_data(int index);
-  ::update_protocol_v3::ExtraData* add_extra_data();
-  ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData >*
-      mutable_extra_data();
-  const ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData >&
-      extra_data() const;
+  static const int kExtraDataFieldNumber = 12;
+  const ::std::string& extra_data() const;
+  void set_extra_data(const ::std::string& value);
+  void set_extra_data(const char* value);
+  void set_extra_data(const char* value, size_t size);
+  ::std::string* mutable_extra_data();
+  ::std::string* release_extra_data();
+  void set_allocated_extra_data(::std::string* extra_data);
 
   // @@protoc_insertion_point(class_scope:update_protocol_v3.LiveObject)
  private:
   inline void set_has_label();
   inline void clear_has_label();
+  inline void set_has_is_tracked();
+  inline void clear_has_is_tracked();
   inline void set_has_x();
   inline void clear_has_x();
   inline void set_has_y();
@@ -495,11 +326,14 @@ class LiveObject : public ::google::protobuf::Message {
   inline void clear_has_qw();
   inline void set_has_button_bits();
   inline void clear_has_button_bits();
+  inline void set_has_extra_data();
+  inline void clear_has_extra_data();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::internal::ArenaStringPtr label_;
+  bool is_tracked_;
   float x_;
   float y_;
   float z_;
@@ -507,9 +341,9 @@ class LiveObject : public ::google::protobuf::Message {
   float qy_;
   float qz_;
   float qw_;
-  ::google::protobuf::int32 button_bits_;
   ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::AxisButton > axis_buttons_;
-  ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData > extra_data_;
+  ::google::protobuf::internal::ArenaStringPtr extra_data_;
+  ::google::protobuf::int32 button_bits_;
   friend void  protobuf_AddDesc_update_5fprotocol_5fv3_2eproto();
   friend void protobuf_AssignDesc_update_5fprotocol_5fv3_2eproto();
   friend void protobuf_ShutdownFile_update_5fprotocol_5fv3_2eproto();
@@ -628,6 +462,18 @@ class Update : public ::google::protobuf::Message {
   const ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::LiveObject >&
       live_objects() const;
 
+  // optional string extra_data = 6;
+  bool has_extra_data() const;
+  void clear_extra_data();
+  static const int kExtraDataFieldNumber = 6;
+  const ::std::string& extra_data() const;
+  void set_extra_data(const ::std::string& value);
+  void set_extra_data(const char* value);
+  void set_extra_data(const char* value, size_t size);
+  ::std::string* mutable_extra_data();
+  ::std::string* release_extra_data();
+  void set_allocated_extra_data(::std::string* extra_data);
+
   // @@protoc_insertion_point(class_scope:update_protocol_v3.Update)
  private:
   inline void set_has_label();
@@ -638,6 +484,8 @@ class Update : public ::google::protobuf::Message {
   inline void clear_has_lhs_frame();
   inline void set_has_time();
   inline void clear_has_time();
+  inline void set_has_extra_data();
+  inline void clear_has_extra_data();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
@@ -646,6 +494,7 @@ class Update : public ::google::protobuf::Message {
   ::google::protobuf::int32 mod_version_;
   bool lhs_frame_;
   ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::LiveObject > live_objects_;
+  ::google::protobuf::internal::ArenaStringPtr extra_data_;
   ::google::protobuf::int32 time_;
   friend void  protobuf_AddDesc_update_5fprotocol_5fv3_2eproto();
   friend void protobuf_AssignDesc_update_5fprotocol_5fv3_2eproto();
@@ -660,295 +509,6 @@ class Update : public ::google::protobuf::Message {
 // ===================================================================
 
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
-// ExtraData
-
-// optional string label = 1;
-inline bool ExtraData::has_label() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void ExtraData::set_has_label() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void ExtraData::clear_has_label() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void ExtraData::clear_label() {
-  label_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_label();
-}
-inline const ::std::string& ExtraData::label() const {
-  // @@protoc_insertion_point(field_get:update_protocol_v3.ExtraData.label)
-  return label_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void ExtraData::set_label(const ::std::string& value) {
-  set_has_label();
-  label_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:update_protocol_v3.ExtraData.label)
-}
-inline void ExtraData::set_label(const char* value) {
-  set_has_label();
-  label_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:update_protocol_v3.ExtraData.label)
-}
-inline void ExtraData::set_label(const char* value, size_t size) {
-  set_has_label();
-  label_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:update_protocol_v3.ExtraData.label)
-}
-inline ::std::string* ExtraData::mutable_label() {
-  set_has_label();
-  // @@protoc_insertion_point(field_mutable:update_protocol_v3.ExtraData.label)
-  return label_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* ExtraData::release_label() {
-  clear_has_label();
-  return label_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void ExtraData::set_allocated_label(::std::string* label) {
-  if (label != NULL) {
-    set_has_label();
-  } else {
-    clear_has_label();
-  }
-  label_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), label);
-  // @@protoc_insertion_point(field_set_allocated:update_protocol_v3.ExtraData.label)
-}
-
-// optional int32 int_val = 2;
-inline bool ExtraData::has_int_val() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void ExtraData::set_has_int_val() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void ExtraData::clear_has_int_val() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void ExtraData::clear_int_val() {
-  int_val_ = 0;
-  clear_has_int_val();
-}
-inline ::google::protobuf::int32 ExtraData::int_val() const {
-  // @@protoc_insertion_point(field_get:update_protocol_v3.ExtraData.int_val)
-  return int_val_;
-}
-inline void ExtraData::set_int_val(::google::protobuf::int32 value) {
-  set_has_int_val();
-  int_val_ = value;
-  // @@protoc_insertion_point(field_set:update_protocol_v3.ExtraData.int_val)
-}
-
-// optional float float_val = 3;
-inline bool ExtraData::has_float_val() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void ExtraData::set_has_float_val() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void ExtraData::clear_has_float_val() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void ExtraData::clear_float_val() {
-  float_val_ = 0;
-  clear_has_float_val();
-}
-inline float ExtraData::float_val() const {
-  // @@protoc_insertion_point(field_get:update_protocol_v3.ExtraData.float_val)
-  return float_val_;
-}
-inline void ExtraData::set_float_val(float value) {
-  set_has_float_val();
-  float_val_ = value;
-  // @@protoc_insertion_point(field_set:update_protocol_v3.ExtraData.float_val)
-}
-
-// optional double double_val = 4;
-inline bool ExtraData::has_double_val() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void ExtraData::set_has_double_val() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void ExtraData::clear_has_double_val() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void ExtraData::clear_double_val() {
-  double_val_ = 0;
-  clear_has_double_val();
-}
-inline double ExtraData::double_val() const {
-  // @@protoc_insertion_point(field_get:update_protocol_v3.ExtraData.double_val)
-  return double_val_;
-}
-inline void ExtraData::set_double_val(double value) {
-  set_has_double_val();
-  double_val_ = value;
-  // @@protoc_insertion_point(field_set:update_protocol_v3.ExtraData.double_val)
-}
-
-// optional string string_val = 5;
-inline bool ExtraData::has_string_val() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void ExtraData::set_has_string_val() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void ExtraData::clear_has_string_val() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void ExtraData::clear_string_val() {
-  string_val_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_string_val();
-}
-inline const ::std::string& ExtraData::string_val() const {
-  // @@protoc_insertion_point(field_get:update_protocol_v3.ExtraData.string_val)
-  return string_val_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void ExtraData::set_string_val(const ::std::string& value) {
-  set_has_string_val();
-  string_val_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:update_protocol_v3.ExtraData.string_val)
-}
-inline void ExtraData::set_string_val(const char* value) {
-  set_has_string_val();
-  string_val_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:update_protocol_v3.ExtraData.string_val)
-}
-inline void ExtraData::set_string_val(const char* value, size_t size) {
-  set_has_string_val();
-  string_val_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:update_protocol_v3.ExtraData.string_val)
-}
-inline ::std::string* ExtraData::mutable_string_val() {
-  set_has_string_val();
-  // @@protoc_insertion_point(field_mutable:update_protocol_v3.ExtraData.string_val)
-  return string_val_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* ExtraData::release_string_val() {
-  clear_has_string_val();
-  return string_val_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void ExtraData::set_allocated_string_val(::std::string* string_val) {
-  if (string_val != NULL) {
-    set_has_string_val();
-  } else {
-    clear_has_string_val();
-  }
-  string_val_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), string_val);
-  // @@protoc_insertion_point(field_set_allocated:update_protocol_v3.ExtraData.string_val)
-}
-
-// optional bool bool_val = 6;
-inline bool ExtraData::has_bool_val() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void ExtraData::set_has_bool_val() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void ExtraData::clear_has_bool_val() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void ExtraData::clear_bool_val() {
-  bool_val_ = false;
-  clear_has_bool_val();
-}
-inline bool ExtraData::bool_val() const {
-  // @@protoc_insertion_point(field_get:update_protocol_v3.ExtraData.bool_val)
-  return bool_val_;
-}
-inline void ExtraData::set_bool_val(bool value) {
-  set_has_bool_val();
-  bool_val_ = value;
-  // @@protoc_insertion_point(field_set:update_protocol_v3.ExtraData.bool_val)
-}
-
-// optional bytes bytes_val = 7;
-inline bool ExtraData::has_bytes_val() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void ExtraData::set_has_bytes_val() {
-  _has_bits_[0] |= 0x00000040u;
-}
-inline void ExtraData::clear_has_bytes_val() {
-  _has_bits_[0] &= ~0x00000040u;
-}
-inline void ExtraData::clear_bytes_val() {
-  bytes_val_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_bytes_val();
-}
-inline const ::std::string& ExtraData::bytes_val() const {
-  // @@protoc_insertion_point(field_get:update_protocol_v3.ExtraData.bytes_val)
-  return bytes_val_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void ExtraData::set_bytes_val(const ::std::string& value) {
-  set_has_bytes_val();
-  bytes_val_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:update_protocol_v3.ExtraData.bytes_val)
-}
-inline void ExtraData::set_bytes_val(const char* value) {
-  set_has_bytes_val();
-  bytes_val_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:update_protocol_v3.ExtraData.bytes_val)
-}
-inline void ExtraData::set_bytes_val(const void* value, size_t size) {
-  set_has_bytes_val();
-  bytes_val_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:update_protocol_v3.ExtraData.bytes_val)
-}
-inline ::std::string* ExtraData::mutable_bytes_val() {
-  set_has_bytes_val();
-  // @@protoc_insertion_point(field_mutable:update_protocol_v3.ExtraData.bytes_val)
-  return bytes_val_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* ExtraData::release_bytes_val() {
-  clear_has_bytes_val();
-  return bytes_val_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void ExtraData::set_allocated_bytes_val(::std::string* bytes_val) {
-  if (bytes_val != NULL) {
-    set_has_bytes_val();
-  } else {
-    clear_has_bytes_val();
-  }
-  bytes_val_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), bytes_val);
-  // @@protoc_insertion_point(field_set_allocated:update_protocol_v3.ExtraData.bytes_val)
-}
-
-// repeated .update_protocol_v3.ExtraData extra_val = 8;
-inline int ExtraData::extra_val_size() const {
-  return extra_val_.size();
-}
-inline void ExtraData::clear_extra_val() {
-  extra_val_.Clear();
-}
-inline const ::update_protocol_v3::ExtraData& ExtraData::extra_val(int index) const {
-  // @@protoc_insertion_point(field_get:update_protocol_v3.ExtraData.extra_val)
-  return extra_val_.Get(index);
-}
-inline ::update_protocol_v3::ExtraData* ExtraData::mutable_extra_val(int index) {
-  // @@protoc_insertion_point(field_mutable:update_protocol_v3.ExtraData.extra_val)
-  return extra_val_.Mutable(index);
-}
-inline ::update_protocol_v3::ExtraData* ExtraData::add_extra_val() {
-  // @@protoc_insertion_point(field_add:update_protocol_v3.ExtraData.extra_val)
-  return extra_val_.Add();
-}
-inline ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData >*
-ExtraData::mutable_extra_val() {
-  // @@protoc_insertion_point(field_mutable_list:update_protocol_v3.ExtraData.extra_val)
-  return &extra_val_;
-}
-inline const ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData >&
-ExtraData::extra_val() const {
-  // @@protoc_insertion_point(field_list:update_protocol_v3.ExtraData.extra_val)
-  return extra_val_;
-}
-
-// -------------------------------------------------------------------
-
 // AxisButton
 
 // optional float x = 1;
@@ -1056,15 +616,39 @@ inline void LiveObject::set_allocated_label(::std::string* label) {
   // @@protoc_insertion_point(field_set_allocated:update_protocol_v3.LiveObject.label)
 }
 
-// optional float x = 2;
-inline bool LiveObject::has_x() const {
+// optional bool is_tracked = 2;
+inline bool LiveObject::has_is_tracked() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void LiveObject::set_has_x() {
+inline void LiveObject::set_has_is_tracked() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void LiveObject::clear_has_x() {
+inline void LiveObject::clear_has_is_tracked() {
   _has_bits_[0] &= ~0x00000002u;
+}
+inline void LiveObject::clear_is_tracked() {
+  is_tracked_ = false;
+  clear_has_is_tracked();
+}
+inline bool LiveObject::is_tracked() const {
+  // @@protoc_insertion_point(field_get:update_protocol_v3.LiveObject.is_tracked)
+  return is_tracked_;
+}
+inline void LiveObject::set_is_tracked(bool value) {
+  set_has_is_tracked();
+  is_tracked_ = value;
+  // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.is_tracked)
+}
+
+// optional float x = 3;
+inline bool LiveObject::has_x() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void LiveObject::set_has_x() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void LiveObject::clear_has_x() {
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void LiveObject::clear_x() {
   x_ = 0;
@@ -1080,15 +664,15 @@ inline void LiveObject::set_x(float value) {
   // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.x)
 }
 
-// optional float y = 3;
+// optional float y = 4;
 inline bool LiveObject::has_y() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void LiveObject::set_has_y() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void LiveObject::clear_has_y() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void LiveObject::clear_y() {
   y_ = 0;
@@ -1104,15 +688,15 @@ inline void LiveObject::set_y(float value) {
   // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.y)
 }
 
-// optional float z = 4;
+// optional float z = 5;
 inline bool LiveObject::has_z() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
 inline void LiveObject::set_has_z() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000010u;
 }
 inline void LiveObject::clear_has_z() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void LiveObject::clear_z() {
   z_ = 0;
@@ -1128,15 +712,15 @@ inline void LiveObject::set_z(float value) {
   // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.z)
 }
 
-// optional float qx = 5;
+// optional float qx = 6;
 inline bool LiveObject::has_qx() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000020u) != 0;
 }
 inline void LiveObject::set_has_qx() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000020u;
 }
 inline void LiveObject::clear_has_qx() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000020u;
 }
 inline void LiveObject::clear_qx() {
   qx_ = 0;
@@ -1152,15 +736,15 @@ inline void LiveObject::set_qx(float value) {
   // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.qx)
 }
 
-// optional float qy = 6;
+// optional float qy = 7;
 inline bool LiveObject::has_qy() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
+  return (_has_bits_[0] & 0x00000040u) != 0;
 }
 inline void LiveObject::set_has_qy() {
-  _has_bits_[0] |= 0x00000020u;
+  _has_bits_[0] |= 0x00000040u;
 }
 inline void LiveObject::clear_has_qy() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void LiveObject::clear_qy() {
   qy_ = 0;
@@ -1176,15 +760,15 @@ inline void LiveObject::set_qy(float value) {
   // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.qy)
 }
 
-// optional float qz = 7;
+// optional float qz = 8;
 inline bool LiveObject::has_qz() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void LiveObject::set_has_qz() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void LiveObject::clear_has_qz() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void LiveObject::clear_qz() {
   qz_ = 0;
@@ -1200,15 +784,15 @@ inline void LiveObject::set_qz(float value) {
   // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.qz)
 }
 
-// optional float qw = 8;
+// optional float qw = 9;
 inline bool LiveObject::has_qw() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
 inline void LiveObject::set_has_qw() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000100u;
 }
 inline void LiveObject::clear_has_qw() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 inline void LiveObject::clear_qw() {
   qw_ = 0;
@@ -1224,15 +808,15 @@ inline void LiveObject::set_qw(float value) {
   // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.qw)
 }
 
-// optional int32 button_bits = 9;
+// optional int32 button_bits = 10;
 inline bool LiveObject::has_button_bits() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
 inline void LiveObject::set_has_button_bits() {
-  _has_bits_[0] |= 0x00000100u;
+  _has_bits_[0] |= 0x00000200u;
 }
 inline void LiveObject::clear_has_button_bits() {
-  _has_bits_[0] &= ~0x00000100u;
+  _has_bits_[0] &= ~0x00000200u;
 }
 inline void LiveObject::clear_button_bits() {
   button_bits_ = 0;
@@ -1248,7 +832,7 @@ inline void LiveObject::set_button_bits(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.button_bits)
 }
 
-// repeated .update_protocol_v3.AxisButton axis_buttons = 10;
+// repeated .update_protocol_v3.AxisButton axis_buttons = 11;
 inline int LiveObject::axis_buttons_size() const {
   return axis_buttons_.size();
 }
@@ -1278,34 +862,57 @@ LiveObject::axis_buttons() const {
   return axis_buttons_;
 }
 
-// repeated .update_protocol_v3.ExtraData extra_data = 11;
-inline int LiveObject::extra_data_size() const {
-  return extra_data_.size();
+// optional string extra_data = 12;
+inline bool LiveObject::has_extra_data() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void LiveObject::set_has_extra_data() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void LiveObject::clear_has_extra_data() {
+  _has_bits_[0] &= ~0x00000800u;
 }
 inline void LiveObject::clear_extra_data() {
-  extra_data_.Clear();
+  extra_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_extra_data();
 }
-inline const ::update_protocol_v3::ExtraData& LiveObject::extra_data(int index) const {
+inline const ::std::string& LiveObject::extra_data() const {
   // @@protoc_insertion_point(field_get:update_protocol_v3.LiveObject.extra_data)
-  return extra_data_.Get(index);
+  return extra_data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::update_protocol_v3::ExtraData* LiveObject::mutable_extra_data(int index) {
+inline void LiveObject::set_extra_data(const ::std::string& value) {
+  set_has_extra_data();
+  extra_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:update_protocol_v3.LiveObject.extra_data)
+}
+inline void LiveObject::set_extra_data(const char* value) {
+  set_has_extra_data();
+  extra_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:update_protocol_v3.LiveObject.extra_data)
+}
+inline void LiveObject::set_extra_data(const char* value, size_t size) {
+  set_has_extra_data();
+  extra_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:update_protocol_v3.LiveObject.extra_data)
+}
+inline ::std::string* LiveObject::mutable_extra_data() {
+  set_has_extra_data();
   // @@protoc_insertion_point(field_mutable:update_protocol_v3.LiveObject.extra_data)
-  return extra_data_.Mutable(index);
+  return extra_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::update_protocol_v3::ExtraData* LiveObject::add_extra_data() {
-  // @@protoc_insertion_point(field_add:update_protocol_v3.LiveObject.extra_data)
-  return extra_data_.Add();
+inline ::std::string* LiveObject::release_extra_data() {
+  clear_has_extra_data();
+  return extra_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData >*
-LiveObject::mutable_extra_data() {
-  // @@protoc_insertion_point(field_mutable_list:update_protocol_v3.LiveObject.extra_data)
-  return &extra_data_;
-}
-inline const ::google::protobuf::RepeatedPtrField< ::update_protocol_v3::ExtraData >&
-LiveObject::extra_data() const {
-  // @@protoc_insertion_point(field_list:update_protocol_v3.LiveObject.extra_data)
-  return extra_data_;
+inline void LiveObject::set_allocated_extra_data(::std::string* extra_data) {
+  if (extra_data != NULL) {
+    set_has_extra_data();
+  } else {
+    clear_has_extra_data();
+  }
+  extra_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), extra_data);
+  // @@protoc_insertion_point(field_set_allocated:update_protocol_v3.LiveObject.extra_data)
 }
 
 // -------------------------------------------------------------------
@@ -1467,9 +1074,60 @@ Update::live_objects() const {
   return live_objects_;
 }
 
-#endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
-// -------------------------------------------------------------------
+// optional string extra_data = 6;
+inline bool Update::has_extra_data() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Update::set_has_extra_data() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Update::clear_has_extra_data() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Update::clear_extra_data() {
+  extra_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_extra_data();
+}
+inline const ::std::string& Update::extra_data() const {
+  // @@protoc_insertion_point(field_get:update_protocol_v3.Update.extra_data)
+  return extra_data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Update::set_extra_data(const ::std::string& value) {
+  set_has_extra_data();
+  extra_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:update_protocol_v3.Update.extra_data)
+}
+inline void Update::set_extra_data(const char* value) {
+  set_has_extra_data();
+  extra_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:update_protocol_v3.Update.extra_data)
+}
+inline void Update::set_extra_data(const char* value, size_t size) {
+  set_has_extra_data();
+  extra_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:update_protocol_v3.Update.extra_data)
+}
+inline ::std::string* Update::mutable_extra_data() {
+  set_has_extra_data();
+  // @@protoc_insertion_point(field_mutable:update_protocol_v3.Update.extra_data)
+  return extra_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Update::release_extra_data() {
+  clear_has_extra_data();
+  return extra_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Update::set_allocated_extra_data(::std::string* extra_data) {
+  if (extra_data != NULL) {
+    set_has_extra_data();
+  } else {
+    clear_has_extra_data();
+  }
+  extra_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), extra_data);
+  // @@protoc_insertion_point(field_set_allocated:update_protocol_v3.Update.extra_data)
+}
 
+#endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
