@@ -233,25 +233,15 @@ public:
 		
 		liveObj->set_label(label);
 
-		if (tracking_valid) {
-			liveObj->set_x(x);
-			liveObj->set_y(y);
-			liveObj->set_z(z);
+		liveObj->set_x(x);
+		liveObj->set_y(y);
+		liveObj->set_z(z);
 
-			liveObj->set_qx(qx);
-			liveObj->set_qy(qy);
-			liveObj->set_qz(qz);
-			liveObj->set_qw(qw);
-		}
-		else {
-			liveObj->set_x(0);
-			liveObj->set_y(0);
-			liveObj->set_z(0);
-			liveObj->set_qx(0);
-			liveObj->set_qy(0);
-			liveObj->set_qz(0);
-			liveObj->set_qw(1);
-		}
+		liveObj->set_qx(qx);
+		liveObj->set_qy(qy);
+		liveObj->set_qz(qz);
+		liveObj->set_qw(qw);
+		liveObj->set_is_tracked(tracking_valid);
 
 		// TODO: Wiimote/Other interface buttons
 		liveObj->set_button_bits(button_bits);
@@ -350,11 +340,11 @@ public:
 				}
 			}
 		}
+		clearPacketGroupsBeforeHead();
 		packet_groups_lock.unlock();
 	}
 
 	static void clearPacketGroupsBeforeHead() {
-		packet_groups_lock.lock();
 		vector<int> indexes_to_delete = vector<int>();
 		// Find packet groups to delete
 		for (int i = 0; i < packet_groups.size(); i++) {
@@ -374,7 +364,6 @@ public:
 			delete(packet_groups[group_index]);
 			packet_groups.erase(packet_groups.begin() + group_index);
 		}
-		packet_groups_lock.unlock();
 	}
 };
 /* Initialize PacketGroup static fields */
@@ -394,7 +383,6 @@ int PacketGroup::mod_version = 0;
 int PacketServingThread() {
 	while (true) {
 		PacketGroup::send();
-		PacketGroup::clearPacketGroupsBeforeHead();
 		Sleep(1);
 	}
 	return 0;
@@ -463,7 +451,7 @@ int PacketReceivingThread() {
 		update->ParseFromArray(buf, recv_status);
 		delete recvUpdate;
 		recvUpdate = update;
-		cout << "received " << recvUpdate->live_objects_size() << " objects." << endl;
+		//cout << "received " << recvUpdate->live_objects_size() << " objects." << endl;
 		PacketGroup *pg = new PacketGroup(recvUpdate->time(), false, true, update->label());
 		if (recvUpdate != NULL) {
 			for (int i = 0; i < recvUpdate->live_objects_size(); i++) {
