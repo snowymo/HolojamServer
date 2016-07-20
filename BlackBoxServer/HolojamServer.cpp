@@ -168,8 +168,6 @@ private:
 	/* static fields */
 	const static int max_packet_bytes = 872;
 	static vector<PacketGroup*> packet_groups;
-	static PacketGroup *head;
-	static string last_label;
 	static std::mutex packet_groups_lock;
 	static char buffer[max_packet_bytes];
 #ifdef LCL_BROADCAST
@@ -286,69 +284,43 @@ public:
 	/* These methods are thread safe and operator on packets that should not be modified */
 	static void send() {
 		// Ensure a packet group exists to send
-		if (!head) {
+		if (packet_groups.size() == 0) {
 			return;
 		}
+		PacketGroup *head = packet_groups.at(0);
+
 		// Ensure our packet group is not free'd while we send one of its packets
 		packet_groups_lock.lock();
-		// Get the current packet of the packet group
-		update_protocol_v3::Update *packet = head->getNextPacketToSend();
-		//cout << head->label << ": sending packet " << head->next_packet-head->packets.begin()+1 << " out of " << head->packets.size() << endl;
-		// TODO: Check for wiimotes in this packet and update
 
-		// Fill the buffer
-		//cout << "packet size: " << packet->ByteSize() << endl;
+		// Get the current packet of the packet group
+		if (head->packets.size() == 0) {
+			return;
+		}
+		update_protocol_v3::Update *packet = head->getNextPacketToSend();
 		assert(packet->ByteSize() < max_packet_bytes + 128);
 		packet->SerializePartialToArray(buffer, max_packet_bytes);
+
 		// Send the buffer
-		//std::cout << "sending packet of type: " << packet->label() << std::endl;
-		//std::cout << "sending packet: " << packet->mod_version() << std::endl;
-		//cout << packet->label() << ": sending " << packet->live_objects_size() << " live objects" << endl;
-		//for (update_protocol_v3::LiveObject o : packet->live_objects()) {
-		//	cout << o.label() << ", ";
-		//}
-		//cout << endl;
 #ifdef LCL_BROADCAST
 		multicast_stream.send(buffer, packet->ByteSize());
 #elif defined RMT_BROADCAST || defined RMT_RCV
 		unicast_stream.send(buffer, packet->ByteSize());
 #endif
-		last_label = head->label;
-
-		
+		if (head->all_sent) {
+			//packet_groups.push_back(head);
+			packet_groups.erase(packet_groups.begin());
+		}
 
 		packet_groups_lock.unlock();
 	}
 
 	// Important: A PacketGroup must not be modified after it is set as the head
-	static void setHead(PacketGroup *newHead) {
-		packet_groups_lock.lock();
-		packet_groups.push_back(newHead);
-		if (head == NULL || head->all_sent) {
-			if (newHead->label != last_label) {
-				head = newHead;
-			}
-			else {
-				bool set_head = true;
-				//for (PacketGroup *pg : packet_groups) {
-				//	if (pg->label != newHead->label) {
-				//		set_head = false;
-				//	}
-				//}
-				if (set_head) {
-					head = newHead;
-				}
-			}
-		}
-		packet_groups_lock.unlock();
-	}
-
-	static void clearPacketGroupsBeforeHead() {
+	static void queueHead(PacketGroup *newHead) {
 		packet_groups_lock.lock();
 		vector<int> indexes_to_delete = vector<int>();
 		// Find packet groups to delete
 		for (int i = 0; i < packet_groups.size(); i++) {
-			if (packet_groups[i] != head && packet_groups[i]->label == head->label) {
+			if (packet_groups[i]->label == newHead->label) {
 				indexes_to_delete.push_back(i);
 			}
 		}
@@ -364,17 +336,16 @@ public:
 			delete(packet_groups[group_index]);
 			packet_groups.erase(packet_groups.begin() + group_index);
 		}
+		packet_groups.push_back(newHead);
 		packet_groups_lock.unlock();
 	}
 };
 /* Initialize PacketGroup static fields */
 vector<PacketGroup*> PacketGroup::packet_groups = vector<PacketGroup*>();
-string PacketGroup::last_label = "";
-PacketGroup * PacketGroup::head = NULL;
 std::mutex PacketGroup::packet_groups_lock;
 char PacketGroup::buffer[PacketGroup::max_packet_bytes];
 #ifdef LCL_BROADCAST
-Stream PacketGroup::multicast_stream = Stream("224.1.1.1", 1611, true);
+Stream PacketGroup::multicast_stream = Stream("224.1.1.1", 1612, true);
 #elif defined RMT_BROADCAST || defined RMT_RCV
 Stream PacketGroup::unicast_stream = Stream("128.122.47.161", 1611, false);
 #endif
@@ -384,7 +355,6 @@ int PacketGroup::mod_version = 0;
 int PacketServingThread() {
 	while (true) {
 		PacketGroup::send();
-		PacketGroup::clearPacketGroupsBeforeHead();
 		Sleep(1);
 	}
 	return 0;
@@ -461,7 +431,7 @@ int PacketReceivingThread() {
 				pg->addLiveObject(o, update->lhs_frame());
 			}
 		}
-		PacketGroup::setHead(pg);
+		PacketGroup::queueHead(pg);
 	}
 	
 }
@@ -523,7 +493,7 @@ void HandleNatNetPacket(sFrameOfMocapData *data, void *pUserData)
 		
 	}
 	*/
-	PacketGroup::setHead(pg);
+	PacketGroup::queueHead(pg);
 }
 
 int _tmain(int argc, _TCHAR* argv[])
