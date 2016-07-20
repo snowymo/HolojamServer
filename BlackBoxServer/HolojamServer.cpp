@@ -340,11 +340,11 @@ public:
 				}
 			}
 		}
-		clearPacketGroupsBeforeHead();
 		packet_groups_lock.unlock();
 	}
 
 	static void clearPacketGroupsBeforeHead() {
+		packet_groups_lock.lock();
 		vector<int> indexes_to_delete = vector<int>();
 		// Find packet groups to delete
 		for (int i = 0; i < packet_groups.size(); i++) {
@@ -364,6 +364,7 @@ public:
 			delete(packet_groups[group_index]);
 			packet_groups.erase(packet_groups.begin() + group_index);
 		}
+		packet_groups_lock.unlock();
 	}
 };
 /* Initialize PacketGroup static fields */
@@ -383,6 +384,7 @@ int PacketGroup::mod_version = 0;
 int PacketServingThread() {
 	while (true) {
 		PacketGroup::send();
+		PacketGroup::clearPacketGroupsBeforeHead();
 		Sleep(1);
 	}
 	return 0;
