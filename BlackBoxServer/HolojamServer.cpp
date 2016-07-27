@@ -76,7 +76,6 @@ class Stream {
 		// Bind to correct NIC
 		bind_addr.sin_family = AF_INET;
 		err = inet_pton(AF_INET, IP_ADDR.c_str(), &bind_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
-		//err = inet_pton(AF_INET, "128.122.47.25", &bind_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
 		if (err == SOCKET_ERROR) {
 			printf("SOCKET ERROR; HIT ANY KEY TO ABORT\n");
 			getchar();
@@ -121,9 +120,6 @@ int PacketServingThread();
 int PacketReceivingThread();
 void checkForWiimotes();
 
-update_protocol_v3::Update *recvUpdate;
-std::mutex recvUpdateLock;
-
 unsigned int MyServersDataPort = 1511;
 unsigned int MyServersCommandPort = 1510;
 
@@ -166,7 +162,7 @@ void GetDataDescriptions() {
 class PacketGroup {
 private:
 	/* static fields */
-	const static int max_packet_bytes = 872;
+	const static int max_packet_bytes = 1300;
 	static vector<PacketGroup*> packet_groups;
 	static std::mutex packet_groups_lock;
 	static char buffer[max_packet_bytes];
@@ -241,31 +237,18 @@ public:
 		liveObj->set_qw(qw);
 		liveObj->set_is_tracked(tracking_valid);
 
-		// TODO: Wiimote/Other interface buttons
 		liveObj->set_button_bits(button_bits);
-		//if (button_bits>0)
-		//	cout << label << ": " << button_bits << endl;
-		//liveObj->set_button_bits();
-
-		// not sure about the repeated axisbutton
-		//int axis_buttons_size = liveObj->axis_buttons_size();
-		//for (int i = 0; i < axis_buttons_size; i++) {
-		//	update_protocol_v3::AxisButton * axisBtn = liveObj->add_axis_buttons();
-		//}
-			
 		liveObj->set_extra_data(extra_data);
 
 		update_protocol_v3::Update *current_packet = packets.back();
 		if (!(current_packet->ByteSize() + liveObj->ByteSize() < max_packet_bytes)) {
 			// Create a new packet to hold the rigid body
-			//cout << "creating new packet" << endl;
 			current_packet = newPacket();
 		}
 		current_packet->set_lhs_frame(lhs);
 		assert(current_packet->ByteSize() + liveObj->ByteSize() < max_packet_bytes + 100);
 		current_packet->mutable_live_objects()->AddAllocated(liveObj);
 		assert(current_packet->ByteSize() < max_packet_bytes + 100);
-		//cout << "current packet size: " << current_packet->ByteSize() << endl;
 	}
 
 	update_protocol_v3::Update *getNextPacketToSend() {
@@ -287,10 +270,9 @@ public:
 		if (packet_groups.size() == 0) {
 			return;
 		}
-		PacketGroup *head = packet_groups.at(0);
-
-		// Ensure our packet group is not free'd while we send one of its packets
 		packet_groups_lock.lock();
+
+		PacketGroup *head = packet_groups.at(0);
 
 		// Get the current packet of the packet group
 		if (head->packets.size() == 0) {
@@ -307,7 +289,7 @@ public:
 		unicast_stream.send(buffer, packet->ByteSize());
 #endif
 		if (head->all_sent) {
-			//packet_groups.push_back(head);
+			packet_groups.push_back(head);
 			packet_groups.erase(packet_groups.begin());
 		}
 
@@ -317,6 +299,7 @@ public:
 	// Important: A PacketGroup must not be modified after it is set as the head
 	static void queueHead(PacketGroup *newHead) {
 		packet_groups_lock.lock();
+		
 		vector<int> indexes_to_delete = vector<int>();
 		// Find packet groups to delete
 		for (int i = 0; i < packet_groups.size(); i++) {
@@ -345,7 +328,7 @@ vector<PacketGroup*> PacketGroup::packet_groups = vector<PacketGroup*>();
 std::mutex PacketGroup::packet_groups_lock;
 char PacketGroup::buffer[PacketGroup::max_packet_bytes];
 #ifdef LCL_BROADCAST
-Stream PacketGroup::multicast_stream = Stream("224.1.1.1", 1612, true);
+Stream PacketGroup::multicast_stream = Stream("224.1.1.1", 1611, true);
 #elif defined RMT_BROADCAST || defined RMT_RCV
 Stream PacketGroup::unicast_stream = Stream("128.122.47.161", 1611, false);
 #endif
@@ -382,13 +365,6 @@ int PacketReceivingThread() {
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(1615);
 	addr.sin_addr.s_addr = INADDR_ANY;
-	/*
-	int err = inet_pton(AF_INET, INADDR_ANY, &addr.sin_addr); // S_ADDR of our IP for the WiFi interface
-	//int err = inet_pton(AF_INET, "128.122.47.25", &addr.sin_addr); // S_ADDR of our IP for the WiFi interface
-	if (err == SOCKET_ERROR) {
-		printf("error assigning address\n");
-	}
-	*/
 
 	int conn = ::bind(soc, (sockaddr*)&addr, sizeof(addr));
 	if (conn == SOCKET_ERROR){
@@ -401,16 +377,7 @@ int PacketReceivingThread() {
 	char *buf = (char*)malloc(sizeof(char) * len);
 	int flags = 0;
 
-	/* 
-	sockaddr_in from_addr;
-	from_addr.sin_family = AF_INET;
-	from_addr.sin_port = htons(1615);
-	err = inet_pton(AF_INET, "192.168.1.48", &from_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
-	//err = inet_pton(AF_INET, "128.122.47.25", &from_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
-	if (err == SOCKET_ERROR) {
-		printf("error assigning address\n");
-	}
-	*/
+	Stream stream = Stream("224.1.1.1", 1612, true);
 	
 	while (true) {
 		int addr_len = sizeof(addr);
@@ -418,20 +385,12 @@ int PacketReceivingThread() {
 		if (recv_status == SOCKET_ERROR) {
 			std::cout << "Error in Receiving: " << WSAGetLastError() << std::endl;
 		}
-
+		
 		update_protocol_v3::Update *update = new update_protocol_v3::Update();
 		update->ParseFromArray(buf, recv_status);
-		delete recvUpdate;
-		recvUpdate = update;
-		//cout << "received " << recvUpdate->live_objects_size() << " objects." << endl;
-		PacketGroup *pg = new PacketGroup(recvUpdate->time(), false, true, update->label());
-		if (recvUpdate != NULL) {
-			for (int i = 0; i < recvUpdate->live_objects_size(); i++) {
-				update_protocol_v3::LiveObject o = recvUpdate->live_objects(i);
-				pg->addLiveObject(o, update->lhs_frame());
-			}
-		}
-		PacketGroup::queueHead(pg);
+
+		stream.send(buf, update->ByteSize());
+		Sleep(1);
 	}
 	
 }
@@ -439,7 +398,6 @@ int PacketReceivingThread() {
 void HandleNatNetPacket(sFrameOfMocapData *data, void *pUserData)
 {
 	if (idToLabel.size() == 0) {
-		//printf("No data descriptions received yet...\n");
 		return;
 	}
 	NatNetClient* pClient = (NatNetClient*)pUserData;
@@ -467,6 +425,7 @@ void HandleNatNetPacket(sFrameOfMocapData *data, void *pUserData)
 			button_bits,
 			"");
 	}
+	/* TODO: Implement Skeleton and Stray Markers later */
 	/*
 	for (int i = 0; i < data->nSkeletons; i++) {
 		for (int j = 0; j < data->Skeletons[i].nRigidBodies; j++) {
@@ -480,8 +439,7 @@ void HandleNatNetPacket(sFrameOfMocapData *data, void *pUserData)
 				"");
 		}
 	}
-	*/
-	/*
+
 	for (int i = 0; i < data->nOtherMarkers; i++) {
 		float* m = data->OtherMarkers[i];
 		pg->addLiveObject("marker",
@@ -492,7 +450,7 @@ void HandleNatNetPacket(sFrameOfMocapData *data, void *pUserData)
 			0);
 		
 	}
-	*/
+	//*/
 	PacketGroup::queueHead(pg);
 }
 
@@ -642,9 +600,7 @@ int CreateClient(int iConnectionType)
 	// Init Client and connect to NatNet server
 	// to use NatNet default port assigments
 	int retCode = theClient->Initialize("127.0.0.1", "127.0.0.1");
-//	int retCode = theClient->Initialize("128.122.47.25", "128.122.47.25");
-	// to use a different port for commands and/or data:
-	//int retCode = theClient->Initialize(szMyIPAddress, szServerIPAddress, MyServersCommandPort, MyServersDataPort);
+
 	if (retCode != ErrorCode_OK)
 	{
 		printf("Unable to connect to server.  Error code: %d. Exiting", retCode);
@@ -662,8 +618,6 @@ int CreateClient(int iConnectionType)
 			ServerDescription.HostAppVersion[1], ServerDescription.HostAppVersion[2], ServerDescription.HostAppVersion[3]);
 		printf("NatNet Version: %d.%d.%d.%d\n", ServerDescription.NatNetVersion[0], ServerDescription.NatNetVersion[1],
 			ServerDescription.NatNetVersion[2], ServerDescription.NatNetVersion[3]);
-		//printf("Client IP:%s\n", "128.122.47.25");
-		//printf("Server IP:%s\n", "128.122.47.25");
 		printf("Client IP:%s\n", "192.168.0.1");
 		printf("Server IP:%s\n", "192.168.0.1");
 		printf("Server Name:%s\n\n", ServerDescription.szHostComputerName);
@@ -691,10 +645,9 @@ void resetClient()
 	if (iSuccess != 0) {
 		printf("error un-initting Client\n");
 	}
-	//iSuccess = theClient->Initialize("128.122.47.25", "128.122.47.25");
+
 	iSuccess = theClient->Initialize("127.0.0.1", "127.0.0.1");
 	if (iSuccess != 0) {
 		printf("error re-initting Client\n");
 	}
 }
-
