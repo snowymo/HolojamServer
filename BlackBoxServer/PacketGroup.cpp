@@ -1,5 +1,4 @@
 #include "PacketGroup.h"
-#include "Constants.h"
 
 /* Initialize PacketGroup static fields */
 const int max_packet_bytes = 1300;

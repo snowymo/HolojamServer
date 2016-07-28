@@ -6,8 +6,6 @@ Includes some code from OptiTrack.
 #include <iostream>
 #include <thread>
 #include <conio.h>
-#include <WinSock2.h>
-#include "targetver.h"
 #include "MotiveClient.h"
 #include "update_protocol_v3.pb.h"
 #include "Constants.h"
@@ -133,6 +131,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		printf("(press the 'h' key for help)\n");
 		c = _getch();
+
 		switch (c)
 		{
 		case 'h':
