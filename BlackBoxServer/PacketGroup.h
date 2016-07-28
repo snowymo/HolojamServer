@@ -12,12 +12,11 @@
 #include <google/protobuf/reflection_ops.h>
 #include <google/protobuf/wire_format.h>
 #include <google/protobuf/arena.h>
+#include "Stream.h"
 
 using std::string;
 using std::vector;
 using std::mutex;
-
-class PacketGroup;
 
 class PacketGroup {
 
@@ -28,9 +27,9 @@ class PacketGroup {
 		//static mutex packet_groups_lock;
 		//static char buffer[max_packet_bytes];
 	#ifdef LCL_BROADCAST
-		static Stream multicast_stream;
+		static Stream PacketGroup::multicast_stream;
 	#elif defined RMT_BROADCAST || defined RMT_RCV
-		static Stream unicast_stream;
+		static Stream PacketGroup::unicast_stream;
 	#endif
 
 		// This static field should only be accessed by PacketGroup instances
@@ -58,11 +57,6 @@ class PacketGroup {
 
 		static std::mutex packet_groups_lock;
 		static char buffer[max_packet_bytes];
-		#ifdef LCL_BROADCAST
-				static Stream PacketGroup::multicast_stream = Stream("224.1.1.1", 1611, true);
-		#elif defined RMT_BROADCAST || defined RMT_RCV
-				static Stream PacketGroup::unicast_stream = Stream("128.122.47.161", 1611, false);
-		#endif
 		PacketGroup(int _timestamp, bool _recording, bool _models_changed, string _label);
 		void addPacket(update_protocol_v3::Update *packet);
 		void addLiveObject(update_protocol_v3::LiveObject o, bool lhs);
