@@ -15,7 +15,6 @@
 
 #include "Stream.h"
 
-using std::string;
 using std::vector;
 using std::mutex;
 
@@ -27,8 +26,6 @@ class PacketGroup {
 		/* static fields */
 		const static int max_packet_bytes = 1300;
 		static vector<PacketGroup*> packet_groups;
-		//static mutex packet_groups_lock;
-		//static char buffer[max_packet_bytes];
 	#ifdef LCL_BROADCAST
 		static Stream multicast_stream;
 	#elif defined RMT_BROADCAST || defined RMT_RCV
@@ -58,7 +55,7 @@ class PacketGroup {
 		* its instance methods should no longer be invoked by an outside class.
 		*/
 
-		static std::mutex packet_groups_lock;
+		static mutex packet_groups_lock;
 		static char buffer[max_packet_bytes];
 		PacketGroup(int _timestamp, bool _recording, bool _models_changed, string _label);
 		void addPacket(update_protocol_v3::Update *packet);

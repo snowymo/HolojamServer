@@ -1,9 +1,5 @@
-
 #include "PacketGroup.h"
-
-using std::vector;
-using std::string;
-using std::mutex;
+#include "Constants.h"
 
 /* Initialize PacketGroup static fields */
 const int max_packet_bytes = 1300;
@@ -13,7 +9,7 @@ mutex PacketGroup::packet_groups_lock;
 char PacketGroup::buffer[max_packet_bytes];
 
 #ifdef LCL_BROADCAST
-	Stream PacketGroup::multicast_stream = Stream("224.1.1.1", 1611, true);
+	Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), MOTIVE_SENDING_PORT, true);
 #elif defined RMT_BROADCAST || defined RMT_RCV
 	Stream PacketGroup::unicast_stream = Stream("128.122.47.161", 1611, false);
 #endif
