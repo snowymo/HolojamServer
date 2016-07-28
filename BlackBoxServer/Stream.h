@@ -2,8 +2,8 @@
 #include <ws2tcpip.h>
 #include <string>
 
-//#define LCL_BROADCAST
-#define RMT_BROADCAST // TODO: uncomment
+#define LCL_BROADCAST
+//#define RMT_BROADCAST // TODO: uncomment
 //#define RMT_RCV // TODO: comment
 
 using std::string;
