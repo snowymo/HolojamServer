@@ -1,16 +1,32 @@
 #include <vector>
+#include <mutex>
+
+#define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
+#include "update_protocol_v3.pb.h"
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/descriptor.h>
+#include <google/protobuf/generated_message_reflection.h>
+#include <google/protobuf/reflection_ops.h>
+#include <google/protobuf/wire_format.h>
+#include <google/protobuf/arena.h>
+
+using std::string;
+using std::vector;
+using std::mutex;
 
 class PacketGroup;
 
 class PacketGroup {
 
-	int PacketGroup::mod_version = 0;
 	private:
 		/* static fields */
 		const static int max_packet_bytes = 1300;
 		static vector<PacketGroup*> packet_groups;
-		static std::mutex packet_groups_lock;
-		static char buffer[max_packet_bytes];
+		//static mutex packet_groups_lock;
+		//static char buffer[max_packet_bytes];
 	#ifdef LCL_BROADCAST
 		static Stream multicast_stream;
 	#elif defined RMT_BROADCAST || defined RMT_RCV

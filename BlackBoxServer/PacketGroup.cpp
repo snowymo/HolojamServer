@@ -3,9 +3,14 @@
 
 using std::vector;
 using std::string;
+using std::mutex;
 
 /* Initialize PacketGroup static fields */
+const int max_packet_bytes = 1300;
 vector<PacketGroup*> PacketGroup::packet_groups = vector<PacketGroup*>();
+int PacketGroup::mod_version = 0;
+mutex PacketGroup::packet_groups_lock;
+char PacketGroup::buffer[max_packet_bytes];
 
 update_protocol_v3::Update* PacketGroup::newPacket() {
 	update_protocol_v3::Update *packet = new update_protocol_v3::Update();
