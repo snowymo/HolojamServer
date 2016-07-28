@@ -12,6 +12,12 @@ int PacketGroup::mod_version = 0;
 mutex PacketGroup::packet_groups_lock;
 char PacketGroup::buffer[max_packet_bytes];
 
+#ifdef LCL_BROADCAST
+	Stream PacketGroup::multicast_stream = Stream("224.1.1.1", 1611, true);
+#elif defined RMT_BROADCAST || defined RMT_RCV
+	Stream PacketGroup::unicast_stream = Stream("128.122.47.161", 1611, false);
+#endif
+
 update_protocol_v3::Update* PacketGroup::newPacket() {
 	update_protocol_v3::Update *packet = new update_protocol_v3::Update();
 	addPacket(packet);

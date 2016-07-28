@@ -6,21 +6,8 @@ Includes some code from OptiTrack.
 #include "stdafx.h"
 #include "PacketGroup.h"
 
-#define LCL_BROADCAST
-//#define RMT_BROADCAST // TODO: uncomment
-//#define RMT_RCV // TODO: comment
-
-using namespace std;
-
-// IP for this host computer
-#ifdef LCL_BROADCAST
-static const string IP_ADDR = "192.168.1.44";
-#elif defined RMT_BROADCAST
-static const string IP_ADDR = ""; // TODO: Enter MAGNET computer IP
-#elif defined RMT_RCV
-static const string IP_ADDR = "128.122.47.161";
-#endif
-
+using std::map;
+using std::thread;
 
 // ADD YOUR WIIMOTE HARDWARE ADDRESSES HERE
 char *mote_id_to_label(QWORD id) {
@@ -42,73 +29,6 @@ char *mote_id_to_label(QWORD id) {
 
 map<std::string, wiimote*> motes;
 unsigned detected = 0;
-
-class Stream {
-	SOCKET s;
-	struct sockaddr_in addr;
-	struct sockaddr_in bind_addr;
-	public:
-	Stream(PCSTR ip, int server_port, bool multicast) {
-		WSADATA wd;
-		WSAStartup(0x02, &wd);
-		int err;
-		if ((s = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET) {
-			printf("[VR] Could not create socket : %d", WSAGetLastError());
-		}
-
-		int opt_val = 1;
-		if (multicast) {
-			err = setsockopt(s, SOL_SOCKET, SO_BROADCAST, (char*)&opt_val, sizeof(opt_val));
-			if (err == SOCKET_ERROR) {
-				printf("SOCKET ERROR; HIT ANY KEY TO ABORT\n");
-				getchar();
-				exit(0);
-			}
-		}
-
-		opt_val = 1;
-		err = setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char*)&opt_val, sizeof(opt_val));
-		if (err == SOCKET_ERROR) {
-			printf("SOCKET ERROR; HIT ANY KEY TO ABORT\n");
-			getchar();
-			exit(0);
-		}
-
-		// Bind to correct NIC
-		bind_addr.sin_family = AF_INET;
-		err = inet_pton(AF_INET, IP_ADDR.c_str(), &bind_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
-		if (err == SOCKET_ERROR) {
-			printf("SOCKET ERROR; HIT ANY KEY TO ABORT\n");
-			getchar();
-			exit(0);
-		}
-		bind_addr.sin_port = 0;
-		err = ::bind(s, (struct sockaddr *)&bind_addr, sizeof(bind_addr));
-		if (err == SOCKET_ERROR) {
-			printf("SOCKET ERROR; HIT ANY KEY TO ABORT\n");
-			getchar();
-			exit(0);
-		}
-
-		memset(&addr, 0, sizeof(addr));
-		addr.sin_family = AF_INET;
-		addr.sin_port = htons(server_port);
-		// Proper mutlicast group
-		err = inet_pton(AF_INET, ip, &addr.sin_addr);
-		if (err == SOCKET_ERROR) {
-			printf("SOCKET ERROR; HIT ANY KEY TO ABORT\n");
-			getchar();
-			exit(0);
-		}
-	}
-	void send(char* packet, int length) {
-		sendto(s, packet, length, 0, (struct sockaddr*) &addr, sizeof(addr));
-	}
-	~Stream() {
-		closesocket(s);
-		WSACleanup();
-	}
-};
 
 #pragma warning( disable : 4996 )
 
