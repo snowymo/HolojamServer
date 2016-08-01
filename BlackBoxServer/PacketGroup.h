@@ -64,4 +64,5 @@ class PacketGroup {
 		update_protocol_v3::Update *getNextPacketToSend();
 		static void send();
 		static void queueHead(PacketGroup *newHead);
+		static void SetUnicastIP();
 };

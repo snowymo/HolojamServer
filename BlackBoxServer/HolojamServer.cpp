@@ -22,6 +22,9 @@ int PacketReceivingThread();
 FILE* fp;
 
 int PacketServingThread() {
+#ifdef RMT_BROADCAST
+	PacketGroup::SetUnicastIP();
+#endif
 	while (true) {
 		PacketGroup::send();
 		Sleep(1);
@@ -49,7 +52,7 @@ int PacketReceivingThread() {
 	
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(SENDING_PORT);
+	addr.sin_port = htons(RECEIVING_PORT);
 	addr.sin_addr.s_addr = INADDR_ANY;
 
 	int conn = ::bind(soc, (sockaddr*)&addr, sizeof(addr));
@@ -83,6 +86,7 @@ int PacketReceivingThread() {
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	cout << argc << endl;
 	printf("== Holojam server =======---\n");
 
 	// Detects and connects to Wiimotes

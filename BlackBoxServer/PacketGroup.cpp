@@ -1,5 +1,12 @@
 #include "PacketGroup.h"
 #include "Constants.h"
+#include <iostream>
+#include <string>
+
+using std::cout;
+using std::endl;
+using std::getline;
+using std::cin;
 
 /* Initialize PacketGroup static fields */
 const int max_packet_bytes = 1300;
@@ -9,10 +16,18 @@ mutex PacketGroup::packet_groups_lock;
 char PacketGroup::buffer[max_packet_bytes];
 
 #ifdef LCL_BROADCAST
-	Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), MOTIVE_SENDING_PORT, true);
-#elif defined RMT_BROADCAST || defined RMT_RCV
-	Stream PacketGroup::unicast_stream = Stream("128.122.47.161", 1611, false);
+Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), MOTIVE_SENDING_PORT, true);
+#elif defined RMT_BROADCAST
+Stream PacketGroup::unicast_stream = Stream("192.168.0.1", RECEIVING_PORT, false);
 #endif
+
+void PacketGroup::SetUnicastIP() {
+	cout << "Enter target computer IP:";
+	string ip = "";
+	getline(cin, ip);
+	unicast_stream = Stream(ip.c_str(), RECEIVING_PORT, false);
+	cout << endl;
+}
 
 update_protocol_v3::Update* PacketGroup::newPacket() {
 	update_protocol_v3::Update *packet = new update_protocol_v3::Update();
@@ -108,7 +123,7 @@ void PacketGroup::send() {
 	// Send the buffer
 	#ifdef LCL_BROADCAST
 		multicast_stream.send(buffer, packet->ByteSize());
-	#elif defined RMT_BROADCAST || defined RMT_RCV
+	#elif defined RMT_BROADCAST
 		unicast_stream.send(buffer, packet->ByteSize());
 	#endif
 	if (head->all_sent) {
