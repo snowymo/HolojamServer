@@ -22,9 +22,6 @@ int PacketReceivingThread();
 FILE* fp;
 
 int PacketServingThread() {
-#ifdef RMT_BROADCAST
-	PacketGroup::SetUnicastIP();
-#endif
 	while (true) {
 		PacketGroup::send();
 		Sleep(1);
@@ -127,6 +124,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	int clientsI = 0;
 	std::string in_str;
 	
+#ifdef RMT_BROADCAST
+	PacketGroup::SetUnicastIP();
+#endif
+
 	// Start the packet serving thread
 	thread packet_serving_thread(PacketServingThread);
 	thread packet_receiving_thread(PacketReceivingThread);
