@@ -1,5 +1,6 @@
 #include <vector>
 #include <mutex>
+#include <memory>
 
 #define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
 #include "update_protocol_v3.pb.h"
@@ -17,6 +18,7 @@
 using std::string;
 using std::vector;
 using std::mutex;
+using std::unique_ptr;
 
 class PacketGroup {
 
@@ -28,8 +30,8 @@ class PacketGroup {
 		//static char buffer[max_packet_bytes];
 	#ifdef LCL_BROADCAST
 		static Stream PacketGroup::multicast_stream;
-	#elif defined RMT_BROADCAST || defined RMT_RCV
-		static Stream PacketGroup::unicast_stream;
+	#elif defined RMT_BROADCAST
+		static vector<unique_ptr<Stream> > unicast_streams;
 	#endif
 
 		// This static field should only be accessed by PacketGroup instances
@@ -64,5 +66,7 @@ class PacketGroup {
 		update_protocol_v3::Update *getNextPacketToSend();
 		static void send();
 		static void queueHead(PacketGroup *newHead);
-		static void SetUnicastIP();
+#ifdef RMT_BROADCAST
+		static void AddUnicastIP(string ip);
+#endif
 };

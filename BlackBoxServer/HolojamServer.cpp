@@ -13,6 +13,8 @@ Includes some code from OptiTrack.
 using std::thread;
 using std::cout;
 using std::endl;
+using std::cin;
+using std::getline;
 
 #pragma warning( disable : 4996 )
 
@@ -123,10 +125,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	bool bExit = false;
 	int clientsI = 0;
 	std::string in_str;
-	
-#ifdef RMT_BROADCAST
-	PacketGroup::SetUnicastIP();
-#endif
 
 	// Start the packet serving thread
 	thread packet_serving_thread(PacketServingThread);
@@ -136,9 +134,20 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		printf("(press the 'h' key for help)\n");
 		c = _getch();
+#ifdef RMT_BROADCAST
+		string ip = "";
+#endif
 
 		switch (c)
 		{
+#ifdef RMT_BROADCAST
+		case 'u':
+			cout << "\nEnter IP for connection: ";
+			getline(cin, ip);
+			PacketGroup::AddUnicastIP(ip);
+			cout << endl;
+			break;
+#endif
 		case 'h':
 			printf("r: reset\nq: quit\np: print server info\nd: refresh data descriptions\n");
 			break;
