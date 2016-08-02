@@ -49,7 +49,7 @@ int PacketReceivingThread() {
 	
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(RECEIVING_PORT);
+	addr.sin_port = htons(PORT);
 	addr.sin_addr.s_addr = INADDR_ANY;
 
 	int conn = ::bind(soc, (sockaddr*)&addr, sizeof(addr));
@@ -63,7 +63,7 @@ int PacketReceivingThread() {
 	char *buf = (char*)malloc(sizeof(char) * len);
 	int flags = 0;
 
-	Stream stream = Stream(MULTICAST_IP.c_str(), MULTICAST_SEND_PORT, true);
+	Stream stream = Stream(MULTICAST_IP.c_str(), PORT, true);
 	
 	while (true) {
 		int addr_len = sizeof(addr);

@@ -16,7 +16,7 @@ mutex PacketGroup::packet_groups_lock;
 char PacketGroup::buffer[max_packet_bytes];
 
 #ifdef LCL_BROADCAST
-Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), MOTIVE_SENDING_PORT, true);
+Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), PORT, true);
 #elif defined RMT_BROADCAST
 Stream PacketGroup::unicast_stream = Stream("192.168.0.1", RECEIVING_PORT, false);
 void PacketGroup::SetUnicastIP() {
