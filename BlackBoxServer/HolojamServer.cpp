@@ -100,6 +100,7 @@ void initializeIPAddresses() {
 		}
 	}
 	file.close();
+	cleanIPs();
 }
 
 void cleanIPs() {
