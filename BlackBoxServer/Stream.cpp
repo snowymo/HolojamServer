@@ -1,3 +1,4 @@
+#include "Constants.h"
 #include "Stream.h"
 #include <iostream>
 
@@ -24,7 +25,14 @@ Stream::Stream(PCSTR ip, int server_port, bool multicast) {
 
 	// Bind to correct NIC
 	bind_addr.sin_family = AF_INET;
-	err = inet_pton(AF_INET, IP_ADDR.c_str(), &bind_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
+	string address;
+	if (multicast) {
+		address = MULTICAST_BIND_IP;
+	}
+	else {
+		address = UNICAST_BIND_IP;
+	}
+	err = inet_pton(AF_INET, address.c_str(), &bind_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
 	handleError(err/*, string */);
 
 	bind_addr.sin_port = 0;

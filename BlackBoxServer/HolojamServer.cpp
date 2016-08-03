@@ -11,6 +11,7 @@ Includes some code from OptiTrack.
 #include "MotiveClient.h"
 #include "update_protocol_v3.pb.h"
 #include "Constants.h"
+#include <iphlpapi.h>
 
 using std::thread;
 using std::cout;
@@ -87,6 +88,22 @@ int PacketReceivingThread() {
 	
 }
 
+void setIPAddressBinds() {
+	string tmp;
+	cout << "Enter multicast binding IP. Press enter for default (10.211.55.6):";
+	getline(cin, tmp);
+	if (tmp != "") {
+		MULTICAST_BIND_IP = tmp;
+	}
+
+	cout << "Enter unicast binding IP. Press enter for default (128.122.47.161):";
+	getline(cin, tmp);
+	if (tmp != "") {
+		UNICAST_BIND_IP = tmp;
+	}
+	GetAdap
+}
+
 void initializeIPAddresses() {
 	std::ifstream file("ips.txt");
 	if (!file.good()) {
@@ -159,6 +176,8 @@ bool WINAPI ConsoleHandler(DWORD CEvent) {
 int _tmain(int argc, _TCHAR* argv[])
 {
 	printf("== Holojam server =======---\n");
+
+	setIPAddressBinds();
 	
 	// Detects and connects to Wiimotes
 	MotiveClient::checkForWiimotes();

@@ -4,9 +4,6 @@
 
 using std::string;
 
-// IP for this host computer
-static const string IP_ADDR = "192.168.1.44";
-
 class Stream {
 	SOCKET s;
 	struct sockaddr_in addr;
