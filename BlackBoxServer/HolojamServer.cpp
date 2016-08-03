@@ -227,7 +227,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// Protobuf setup
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-	//setupMotive();
+	setupMotive();
 
 	int c;
 	bool bExit = false;
