@@ -3,6 +3,7 @@ BlackBoxServer 4.0
 Includes some code from OptiTrack.
 */
 
+#include <fstream>
 #include <iostream>
 #include <thread>
 #include <conio.h>
@@ -22,6 +23,7 @@ int PacketServingThread();
 int PacketReceivingThread();
 
 FILE* fp;
+vector<string> ipAddresses;
 
 int PacketServingThread() {
 	while (true) {
@@ -83,6 +85,34 @@ int PacketReceivingThread() {
 	
 }
 
+void initializeIPAddresses() {
+	std::ifstream file("ips.txt");
+	if (!file.good()) {
+		return;
+	}
+	else {
+		string ip;
+		while (!file.eof()) {
+			getline(file,ip);
+			ipAddresses.push_back(ip);
+		}
+	}
+	file.close();
+}
+
+void saveIPAddresses() {
+	std::ofstream file("ips.txt");
+	if (!file.good()) {
+		return;
+	}
+	else {
+		for (int i = 0; i < ipAddresses.size(); ++i) {
+			file << ipAddresses.at(i) << endl;
+		}
+	}
+	file.close();
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	cout << argc << endl;
@@ -90,6 +120,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// Detects and connects to Wiimotes
 	MotiveClient::checkForWiimotes();
+
+	ipAddresses = vector<string>();
+	initializeIPAddresses();
 
 	// Protobuf setup
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -145,6 +178,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			cout << "\nEnter IP for connection: ";
 			getline(cin, ip);
 			PacketGroup::AddUnicastIP(ip);
+			ipAddresses.push_back(ip);
 			cout << endl;
 			break;
 #endif
@@ -176,6 +210,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			break;
 		}
 	}
+
+	saveIPAddresses();
 
 	// Done - clean up.
 	packet_receiving_thread.detach();
