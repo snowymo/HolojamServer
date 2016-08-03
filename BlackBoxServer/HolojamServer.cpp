@@ -100,6 +100,14 @@ void initializeIPAddresses() {
 	file.close();
 }
 
+void removeFromIPs(string ip) {
+	for (int i = 0; i < ipAddresses.size(); ++i) {
+		if (ipAddresses.at(i) == ip) {
+			ipAddresses.at(i) = "";
+		}
+	}
+}
+
 void saveIPAddresses() {
 	std::ofstream file("ips.txt");
 	if (!file.good()) {
@@ -107,7 +115,9 @@ void saveIPAddresses() {
 	}
 	else {
 		for (int i = 0; i < ipAddresses.size(); ++i) {
-			file << ipAddresses.at(i) << endl;
+			if (ipAddresses.at(i) != "") {
+				file << ipAddresses.at(i) << endl;
+			}
 		}
 	}
 	file.close();
@@ -204,6 +214,17 @@ int _tmain(int argc, _TCHAR* argv[])
 		case 'd':
 			MotiveClient::checkForWiimotes();
 			MotiveClient::GetDataDescriptions();
+			break;
+		case 'i':
+			cout << "Currently cached IP Addresses:" << endl;
+			for (int i = 0; i < ipAddresses.size(); ++i) {
+				cout << "IP " << i << ": " << ipAddresses.at(i) << endl;
+			}
+			break;
+		case 'U':
+			cout << "\nEnter IP to delete from cache: ";
+			getline(cin, ip);
+			removeFromIPs(ip);
 			break;
 		default:
 			printf("unrecognized keycode: %c", c);

@@ -21,6 +21,11 @@ Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), PORT, true);
 #elif defined RMT_BROADCAST
 vector<unique_ptr<Stream> > PacketGroup::unicast_streams = vector<unique_ptr<Stream> >();
 void PacketGroup::AddUnicastIP(string ip) {
+	for (int i = 0; i < unicast_streams.size(); ++i) {
+		if (unicast_streams.at(i)->getIP() == ip) {
+			return;
+		}
+	}
 	unique_ptr<Stream> stream = unique_ptr<Stream>(new Stream(ip.c_str(), PORT, false));
 	unicast_streams.push_back(std::move(stream));
 }

@@ -50,6 +50,15 @@ void Stream::handleError(int err/*, string message */) {
 	}
 }
 
+string Stream::getIP() {
+	char str[INET_ADDRSTRLEN];
+	if (inet_ntop(AF_INET, &(addr.sin_addr), str, INET_ADDRSTRLEN) != NULL) {
+		string s(str);
+		return s;
+	}
+	return "";
+}
+
 Stream::~Stream() {
 	closesocket(s);
 	WSACleanup();

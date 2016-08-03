@@ -18,5 +18,6 @@ class Stream {
 public:
 	Stream(PCSTR ip, int server_port, bool multicast);
 	void send(char* packet, int length);
+	string getIP();
 	~Stream();
 };
