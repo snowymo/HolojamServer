@@ -11,7 +11,6 @@ Includes some code from OptiTrack.
 #include "MotiveClient.h"
 #include "update_protocol_v3.pb.h"
 #include "Constants.h"
-#include <iphlpapi.h>
 
 using std::thread;
 using std::cout;
@@ -101,7 +100,6 @@ void setIPAddressBinds() {
 	if (tmp != "") {
 		UNICAST_BIND_IP = tmp;
 	}
-	GetAdap
 }
 
 void initializeIPAddresses() {
@@ -173,30 +171,27 @@ bool WINAPI ConsoleHandler(DWORD CEvent) {
 	return true;
 }
 
-int _tmain(int argc, _TCHAR* argv[])
-{
-	printf("== Holojam server =======---\n");
+void printHelp() {
+	cout << "r: reset" << endl;
+	cout << "q: quit" << endl;
+	cout << "p: print server info" << endl;
+	cout << "d: refresh data descriptions and check for wiimotes" << endl;
+	cout << "u: add unicast IP address" << endl;
+	cout << "U: remove unicast IP address" << endl;
+	cout << "i: print list of unicast IP addresses" << endl;
+}
 
-	setIPAddressBinds();
-	
-	// Detects and connects to Wiimotes
-	MotiveClient::checkForWiimotes();
-
-	ipAddresses = vector<string>();
-	SetConsoleCtrlHandler((PHANDLER_ROUTINE) ConsoleHandler, true);
-
-	// Protobuf setup
-	GOOGLE_PROTOBUF_VERIFY_VERSION;
-	
+void setupMotive() {
 	int iResult;
 	int iConnectionType = ConnectionType_Multicast;
 
 	// Create NatNet Client
-	/*iResult = MotiveClient::CreateClient(iConnectionType);
+	iResult = MotiveClient::CreateClient(iConnectionType);
 	if (iResult != ErrorCode_OK)
 	{
 		printf("Error initializing client.  See log for details.  Exiting");
-		return 1;
+		getchar();
+		exit(1);
 	}
 	else
 	{
@@ -214,7 +209,26 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	MotiveClient::GetDataDescriptions();
 
-	printf("\nServer is connected to Motive and listening for data...\n");*/
+	printf("\nServer is connected to Motive and listening for data...\n");
+}
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	printf("== Holojam server =======---\n");
+
+	setIPAddressBinds();
+	
+	// Detects and connects to Wiimotes
+	MotiveClient::checkForWiimotes();
+
+	ipAddresses = vector<string>();
+	SetConsoleCtrlHandler((PHANDLER_ROUTINE) ConsoleHandler, true);
+
+	// Protobuf setup
+	GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+	setupMotive();
+
 	int c;
 	bool bExit = false;
 	int clientsI = 0;
@@ -242,7 +256,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			cout << endl;
 			break;
 		case 'h':
-			printf("r: reset\nq: quit\np: print server info\nd: refresh data descriptions\n");
+			printHelp();
 			break;
 		case 'q':
 			bExit = true;
