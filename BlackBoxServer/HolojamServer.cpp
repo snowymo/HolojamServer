@@ -179,13 +179,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		printf("(press the 'h' key for help)\n");
 		c = _getch();
-#ifdef RMT_BROADCAST
 		string ip = "";
-#endif
 
 		switch (c)
 		{
-#ifdef RMT_BROADCAST
 		case 'u':
 			cout << "\nEnter IP for connection: ";
 			getline(cin, ip);
@@ -193,7 +190,6 @@ int _tmain(int argc, _TCHAR* argv[])
 			ipAddresses.push_back(ip);
 			cout << endl;
 			break;
-#endif
 		case 'h':
 			printf("r: reset\nq: quit\np: print server info\nd: refresh data descriptions\n");
 			break;

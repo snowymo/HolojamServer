@@ -16,9 +16,7 @@ int PacketGroup::mod_version = 0;
 mutex PacketGroup::packet_groups_lock;
 char PacketGroup::buffer[max_packet_bytes];
 
-#ifdef LCL_BROADCAST
 Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), PORT, true);
-#elif defined RMT_BROADCAST
 vector<unique_ptr<Stream> > PacketGroup::unicast_streams = vector<unique_ptr<Stream> >();
 void PacketGroup::AddUnicastIP(string ip) {
 	for (int i = 0; i < unicast_streams.size(); ++i) {
@@ -29,8 +27,6 @@ void PacketGroup::AddUnicastIP(string ip) {
 	unique_ptr<Stream> stream = unique_ptr<Stream>(new Stream(ip.c_str(), PORT, false));
 	unicast_streams.push_back(std::move(stream));
 }
-
-#endif
 
 update_protocol_v3::Update* PacketGroup::newPacket() {
 	update_protocol_v3::Update *packet = new update_protocol_v3::Update();
@@ -124,13 +120,10 @@ void PacketGroup::send() {
 	packet->SerializePartialToArray(buffer, max_packet_bytes);
 
 	// Send the buffer
-	#ifdef LCL_BROADCAST
 	multicast_stream.send(buffer, packet->ByteSize());
-	#elif defined RMT_BROADCAST
 	for (int i = 0; i < unicast_streams.size(); i++) {
 		unicast_streams[i]->send(buffer, packet->ByteSize());
 	}
-	#endif
 	if (head->all_sent) {
 		packet_groups.push_back(head);
 		packet_groups.erase(packet_groups.begin());

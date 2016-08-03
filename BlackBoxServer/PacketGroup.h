@@ -28,11 +28,8 @@ class PacketGroup {
 		static vector<PacketGroup*> packet_groups;
 		//static mutex packet_groups_lock;
 		//static char buffer[max_packet_bytes];
-	#ifdef LCL_BROADCAST
 		static Stream PacketGroup::multicast_stream;
-	#elif defined RMT_BROADCAST
 		static vector<unique_ptr<Stream> > unicast_streams;
-	#endif
 
 		// This static field should only be accessed by PacketGroup instances
 		// It should not be accessed by the static class, multiple threads,
@@ -66,7 +63,5 @@ class PacketGroup {
 		update_protocol_v3::Update *getNextPacketToSend();
 		static void send();
 		static void queueHead(PacketGroup *newHead);
-#ifdef RMT_BROADCAST
 		static void AddUnicastIP(string ip);
-#endif
 };

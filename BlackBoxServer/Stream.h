@@ -2,9 +2,6 @@
 #include <ws2tcpip.h>
 #include <string>
 
-//#define LCL_BROADCAST
-#define RMT_BROADCAST
-
 using std::string;
 
 // IP for this host computer
