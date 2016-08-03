@@ -3,6 +3,7 @@ BlackBoxServer 4.0
 Includes some code from OptiTrack.
 */
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <thread>
@@ -101,12 +102,31 @@ void initializeIPAddresses() {
 	file.close();
 }
 
+void cleanIPs() {
+	ipAddresses.erase(
+		std::remove(
+		ipAddresses.begin(),
+		ipAddresses.end(),
+		string("")
+		),
+		ipAddresses.end());
+}
+
+void cleanAndPrintIPs() {
+	cleanIPs();
+	cout << "Currently cached IP Addresses:" << endl;
+	for (int i = 0; i < ipAddresses.size(); ++i) {
+		cout << "IP " << i << ": " << ipAddresses.at(i) << endl;
+	}
+}
+
 void removeFromIPs(string ip) {
 	for (int i = 0; i < ipAddresses.size(); ++i) {
 		if (ipAddresses.at(i) == ip) {
 			ipAddresses.at(i) = "";
 		}
 	}
+	cleanIPs();
 }
 
 void saveIPAddresses() {
@@ -115,6 +135,7 @@ void saveIPAddresses() {
 		return;
 	}
 	else {
+		cleanIPs();
 		for (int i = 0; i < ipAddresses.size(); ++i) {
 			if (ipAddresses.at(i) != "") {
 				file << ipAddresses.at(i) << endl;
@@ -214,10 +235,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			MotiveClient::GetDataDescriptions();
 			break;
 		case 'i':
-			cout << "Currently cached IP Addresses:" << endl;
-			for (int i = 0; i < ipAddresses.size(); ++i) {
-				cout << "IP " << i << ": " << ipAddresses.at(i) << endl;
-			}
+			cleanAndPrintIPs();
 			break;
 		case 'U':
 			cout << "\nEnter IP to delete from cache: ";
