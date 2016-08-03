@@ -22,6 +22,7 @@ using std::getline;
 
 int PacketServingThread();
 int PacketReceivingThread();
+void cleanIPs();
 
 FILE* fp;
 vector<string> ipAddresses;
@@ -146,15 +147,24 @@ void saveIPAddresses() {
 	file.close();
 }
 
+bool WINAPI ConsoleHandler(DWORD CEvent) {
+	switch (CEvent) {
+		case CTRL_CLOSE_EVENT:
+			saveIPAddresses();
+			break;
+	}
+	return true;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	cout << argc << endl;
 	printf("== Holojam server =======---\n");
-
+	
 	// Detects and connects to Wiimotes
 	MotiveClient::checkForWiimotes();
 
 	ipAddresses = vector<string>();
+	SetConsoleCtrlHandler((PHANDLER_ROUTINE) ConsoleHandler, true);
 
 	// Protobuf setup
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -163,7 +173,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	int iConnectionType = ConnectionType_Multicast;
 
 	// Create NatNet Client
-	iResult = MotiveClient::CreateClient(iConnectionType);
+	/*iResult = MotiveClient::CreateClient(iConnectionType);
 	if (iResult != ErrorCode_OK)
 	{
 		printf("Error initializing client.  See log for details.  Exiting");
@@ -185,7 +195,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	MotiveClient::GetDataDescriptions();
 
-	printf("\nServer is connected to Motive and listening for data...\n");
+	printf("\nServer is connected to Motive and listening for data...\n");*/
 	int c;
 	bool bExit = false;
 	int clientsI = 0;
