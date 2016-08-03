@@ -89,13 +89,15 @@ int PacketReceivingThread() {
 
 void setIPAddressBinds() {
 	string tmp;
-	cout << "Enter multicast binding IP. Press enter for default (10.211.55.6):";
+	cout << "Enter multicast binding IP. Press enter for default (";
+	cout << BindIP::MULTICAST_BIND_IP << "):";
 	getline(cin, tmp);
 	if (tmp != "") {
 		BindIP::MULTICAST_BIND_IP = tmp;
 	}
 
-	cout << "Enter unicast binding IP. Press enter for default (128.122.47.161):";
+	cout << "Enter unicast binding IP. Press enter for default (";
+	cout << BindIP::UNICAST_BIND_IP << "):";
 	getline(cin, tmp);
 	if (tmp != "") {
 		BindIP::UNICAST_BIND_IP = tmp;
