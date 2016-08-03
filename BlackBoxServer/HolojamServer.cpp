@@ -94,6 +94,7 @@ void initializeIPAddresses() {
 		string ip;
 		while (!file.eof()) {
 			getline(file,ip);
+			PacketGroup::AddUnicastIP(ip);
 			ipAddresses.push_back(ip);
 		}
 	}
@@ -132,7 +133,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	MotiveClient::checkForWiimotes();
 
 	ipAddresses = vector<string>();
-	initializeIPAddresses();
 
 	// Protobuf setup
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -172,6 +172,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	// Start the packet serving thread
 	thread packet_serving_thread(PacketServingThread);
 	thread packet_receiving_thread(PacketReceivingThread);
+
+	initializeIPAddresses();
 
 	while (!bExit)
 	{
