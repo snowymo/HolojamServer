@@ -92,13 +92,13 @@ void setIPAddressBinds() {
 	cout << "Enter multicast binding IP. Press enter for default (10.211.55.6):";
 	getline(cin, tmp);
 	if (tmp != "") {
-		MULTICAST_BIND_IP = tmp;
+		BindIP::MULTICAST_BIND_IP = tmp;
 	}
 
 	cout << "Enter unicast binding IP. Press enter for default (128.122.47.161):";
 	getline(cin, tmp);
 	if (tmp != "") {
-		UNICAST_BIND_IP = tmp;
+		BindIP::UNICAST_BIND_IP = tmp;
 	}
 }
 
@@ -227,7 +227,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// Protobuf setup
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-	setupMotive();
+	//setupMotive();
 
 	int c;
 	bool bExit = false;

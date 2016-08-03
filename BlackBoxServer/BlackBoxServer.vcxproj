@@ -167,6 +167,7 @@
     <ClInclude Include="wiimote_state.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BindIP.cpp" />
     <ClCompile Include="HolojamServer.cpp" />
     <ClCompile Include="MotiveClient.cpp" />
     <ClCompile Include="PacketGroup.cpp" />

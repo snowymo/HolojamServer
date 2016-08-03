@@ -83,6 +83,9 @@
     <ClCompile Include="MotiveClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BindIP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Libraries\x64\NatNetLib.dll" />

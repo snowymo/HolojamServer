@@ -27,10 +27,10 @@ Stream::Stream(PCSTR ip, int server_port, bool multicast) {
 	bind_addr.sin_family = AF_INET;
 	string address;
 	if (multicast) {
-		address = MULTICAST_BIND_IP;
+		address = BindIP::MULTICAST_BIND_IP;
 	}
 	else {
-		address = UNICAST_BIND_IP;
+		address = BindIP::UNICAST_BIND_IP;
 	}
 	err = inet_pton(AF_INET, address.c_str(), &bind_addr.sin_addr); // S_ADDR of our IP for the WiFi interface
 	handleError(err/*, string */);
