@@ -23,6 +23,8 @@ using std::getline;
 int PacketServingThread();
 int PacketReceivingThread();
 void cleanIPs();
+void AddUnicastIP(string ip);
+vector<unique_ptr<Stream> > unicast_streams = vector<unique_ptr<Stream> >();
 
 FILE* fp;
 vector<string> ipAddresses;
@@ -69,7 +71,7 @@ int PacketReceivingThread() {
 	char *buf = (char*)malloc(sizeof(char) * len);
 	int flags = 0;
 
-	Stream stream = Stream(MULTICAST_IP.c_str(), PORT, true);
+	Stream multicast_stream = Stream(MULTICAST_IP.c_str(), PORT, true);
 	
 	while (true) {
 		int addr_len = sizeof(addr);
@@ -81,10 +83,23 @@ int PacketReceivingThread() {
 		update_protocol_v3::Update *update = new update_protocol_v3::Update();
 		update->ParseFromArray(buf, recv_status);
 
-		stream.send(buf, update->ByteSize());
+		multicast_stream.send(buf, update->ByteSize());
+		for (int i = 0; i < unicast_streams.size(); i++) {
+			unicast_streams[i]->send(buf, update->ByteSize());
+		}
 		Sleep(1);
 	}
 	
+}
+
+void AddUnicastIP(string ip) {
+	for (int i = 0; i < unicast_streams.size(); ++i) {
+		if (unicast_streams.at(i)->getIP() == ip) {
+			return;
+		}
+	}
+	unique_ptr<Stream> stream = unique_ptr<Stream>(new Stream(ip.c_str(), PORT, false));
+	unicast_streams.push_back(std::move(stream));
 }
 
 void setIPAddressBinds() {
@@ -253,6 +268,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		case 'u':
 			cout << "\nEnter IP for connection: ";
 			getline(cin, ip);
+			AddUnicastIP(ip);
 			PacketGroup::AddUnicastIP(ip);
 			ipAddresses.push_back(ip);
 			cout << endl;
