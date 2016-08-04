@@ -1,4 +1,5 @@
 #pragma once
+#include <condition_variable>
 #include <vector>
 #include <mutex>
 #include <memory>
@@ -57,6 +58,7 @@ class PacketGroup {
 		*/
 
 		static std::mutex packet_groups_lock;
+		static std::condition_variable cv;
 		static char buffer[max_packet_bytes];
 		PacketGroup(int _timestamp, bool _recording, bool _models_changed, string _label);
 		void addPacket(update_protocol_v3::Update *packet);

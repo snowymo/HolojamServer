@@ -14,15 +14,11 @@ vector<PacketGroup*> PacketGroup::packet_groups = vector<PacketGroup*>();
 int PacketGroup::mod_version = 0;
 mutex PacketGroup::packet_groups_lock;
 char PacketGroup::buffer[max_packet_bytes];
+std::condition_variable PacketGroup::cv;
 
 //Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), PORT, true);
 //vector<unique_ptr<Stream> > PacketGroup::unicast_streams = vector<unique_ptr<Stream> >();
 void PacketGroup::AddUnicastIP(string ip, vector<Stream*>* unicast_streams) {
-	for (int i = 0; i < unicast_streams->size(); ++i) {
-		if (unicast_streams->at(i)->getIP() == ip) {
-			return;
-		}
-	}
 	Stream* stream = new Stream(ip.c_str(), PORT, false);
 	unicast_streams->push_back(stream);
 }
@@ -106,54 +102,55 @@ void PacketGroup::send(Stream* multicast_stream, vector<Stream*>* unicast_stream
 	if (packet_groups.size() == 0) {
 		return;
 	}
-	packet_groups_lock.lock();
+	{
+		std::unique_lock<mutex> lck(packet_groups_lock);
 
-	PacketGroup *head = packet_groups.at(0);
+		PacketGroup *head = packet_groups.at(0);
 
-	// Get the current packet of the packet group
-	if (head->packets.size() == 0) {
-		return;
+		// Get the current packet of the packet group
+		if (head->packets.size() == 0) {
+			return;
+		}
+		update_protocol_v3::Update *packet = head->getNextPacketToSend();
+		assert(packet->ByteSize() < max_packet_bytes + 128);
+		packet->SerializePartialToArray(buffer, max_packet_bytes);
+
+		// Send the buffer
+		multicast_stream->send(buffer, packet->ByteSize());
+		for (int i = 0; i < unicast_streams->size(); i++) {
+			(*unicast_streams)[i]->send(buffer, packet->ByteSize());
+		}
+		if (head->all_sent) {
+			packet_groups.push_back(head);
+			packet_groups.erase(packet_groups.begin());
+		}
 	}
-	update_protocol_v3::Update *packet = head->getNextPacketToSend();
-	assert(packet->ByteSize() < max_packet_bytes + 128);
-	packet->SerializePartialToArray(buffer, max_packet_bytes);
-
-	// Send the buffer
-	multicast_stream->send(buffer, packet->ByteSize());
-	for (int i = 0; i < unicast_streams->size(); i++) {
-		(*unicast_streams)[i]->send(buffer, packet->ByteSize());
-	}
-	if (head->all_sent) {
-		packet_groups.push_back(head);
-		packet_groups.erase(packet_groups.begin());
-	}
-
-	packet_groups_lock.unlock();
 }
 
 // Important: A PacketGroup must not be modified after it is set as the head
 void PacketGroup::queueHead(PacketGroup *newHead) {
-	packet_groups_lock.lock();
+	{
+		std::unique_lock<mutex> lck(packet_groups_lock);
 
-	vector<int> indexes_to_delete = vector<int>();
-	// Find packet groups to delete
-	for (int i = 0; i < packet_groups.size(); i++) {
-		if (packet_groups[i]->label == newHead->label) {
-			indexes_to_delete.push_back(i);
+		vector<int> indexes_to_delete = vector<int>();
+		// Find packet groups to delete
+		for (int i = 0; i < packet_groups.size(); i++) {
+			if (packet_groups[i]->label == newHead->label) {
+				indexes_to_delete.push_back(i);
+			}
 		}
-	}
-	// Delete them in backwards order
-	for (int i = indexes_to_delete.size() - 1; i >= 0; i--) {
-		int group_index = indexes_to_delete[i];
-		PacketGroup *pg = packet_groups[group_index];
-		for (int pi = pg->packets.size() - 1; pi >= 0; pi--) {
-			update_protocol_v3::Update *p = pg->packets[pi];
-			delete(p);
-			pg->packets.erase(pg->packets.begin() + pi);
+		// Delete them in backwards order
+		for (int i = indexes_to_delete.size() - 1; i >= 0; i--) {
+			int group_index = indexes_to_delete[i];
+			PacketGroup *pg = packet_groups[group_index];
+			for (int pi = pg->packets.size() - 1; pi >= 0; pi--) {
+				update_protocol_v3::Update *p = pg->packets[pi];
+				delete(p);
+				pg->packets.erase(pg->packets.begin() + pi);
+			}
+			delete(packet_groups[group_index]);
+			packet_groups.erase(packet_groups.begin() + group_index);
 		}
-		delete(packet_groups[group_index]);
-		packet_groups.erase(packet_groups.begin() + group_index);
+		packet_groups.push_back(newHead);
 	}
-	packet_groups.push_back(newHead);
-	packet_groups_lock.unlock();
 }

@@ -8,6 +8,7 @@ Includes some code from OptiTrack.
 #include <iostream>
 #include <thread>
 #include <conio.h>
+#include <condition_variable>
 #include "MotiveClient.h"
 #include "update_protocol_v3.pb.h"
 #include "BindIP.h"
@@ -115,7 +116,9 @@ void initializeIPAddresses() {
 		while (!file.eof()) {
 			getline(file,ip);
 			AddUnicastIP(ip);
-			ipAddresses.push_back(ip);
+			if (std::find(ipAddresses.begin(), ipAddresses.end(), ip) == ipAddresses.end()) {
+				ipAddresses.push_back(ip);
+			}
 		}
 	}
 	file.close();
@@ -158,7 +161,10 @@ void saveIPAddresses() {
 		cleanIPs();
 		for (int i = 0; i < ipAddresses.size(); ++i) {
 			if (ipAddresses.at(i) != "") {
-				file << ipAddresses.at(i) << endl;
+				file << ipAddresses.at(i);
+			}
+			if (i != ipAddresses.size() - 1) {
+				file << endl;
 			}
 		}
 	}
@@ -300,8 +306,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	saveIPAddresses();
 
 	// Done - clean up.
-	packet_receiving_thread.detach();
-	packet_serving_thread.detach();
+	{
+		std::unique_lock < std::mutex > lck(PacketGroup::packet_groups_lock);
+		packet_receiving_thread.detach();
+		packet_serving_thread.detach();
+	}
 	MotiveClient::theClient->Uninitialize();
 	return ErrorCode_OK;
 }
