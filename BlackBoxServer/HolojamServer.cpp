@@ -24,17 +24,17 @@ int PacketServingThread();
 int PacketReceivingThread();
 void cleanIPs();
 void AddUnicastIP(string ip);
-vector<unique_ptr<Stream> > unicast_streams = vector<unique_ptr<Stream> >();
+//vector<unique_ptr<Stream> > b_unicast_streams = vector<unique_ptr<Stream> >();
 
 FILE* fp;
 vector<string> ipAddresses;
-Stream* multicast_stream;
-vector<Stream*>* unicast_streams;
-//BindIP binder;
+
+BindIP* binder;
+BindIP* forwardBinder;
 
 int PacketServingThread() {
 	while (true) {
-		PacketGroup::send(multicast_stream, unicast_streams);
+		PacketGroup::send(binder->multicast_stream, &binder->unicast_streams);
 		Sleep(1);
 	}
 	return 0;
@@ -74,7 +74,7 @@ int PacketReceivingThread() {
 	char *buf = (char*)malloc(sizeof(char) * len);
 	int flags = 0;
 
-	Stream multicast_stream = Stream(MULTICAST_IP.c_str(), PORT, true);
+	forwardBinder->multicast_stream = new Stream(MULTICAST_IP.c_str(), PORT, true);
 	
 	while (true) {
 		int addr_len = sizeof(addr);
@@ -86,12 +86,23 @@ int PacketReceivingThread() {
 		update_protocol_v3::Update *update = new update_protocol_v3::Update();
 		update->ParseFromArray(buf, recv_status);
 
-		multicast_stream.send(buf, update->ByteSize());
-		for (int i = 0; i < unicast_streams.size(); i++) {
-			unicast_streams[i]->send(buf, update->ByteSize());
+		forwardBinder->multicast_stream->send(buf, update->ByteSize());
+		for (int i = 0; i < forwardBinder->unicast_streams.size(); i++) {
+			forwardBinder->unicast_streams[i]->send(buf, update->ByteSize());
 		}
 		Sleep(1);
 	}
+}
+
+void AddUnicastIP(string ip) {
+	for (int i = 0; i < forwardBinder->unicast_streams.size(); ++i) {
+		if (forwardBinder->unicast_streams.at(i)->getIP() == ip) {
+			return;
+		}
+	}
+	Stream* stream = new Stream(ip.c_str(), PORT, false);
+	forwardBinder->unicast_streams.push_back(stream);
+	PacketGroup::AddUnicastIP(ip, &binder->unicast_streams);
 }
 
 void initializeIPAddresses() {
@@ -103,7 +114,7 @@ void initializeIPAddresses() {
 		string ip;
 		while (!file.eof()) {
 			getline(file,ip);
-			PacketGroup::AddUnicastIP(ip, unicast_streams);
+			AddUnicastIP(ip);
 			ipAddresses.push_back(ip);
 		}
 	}
@@ -209,9 +220,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("== Holojam server =======---\n");
 
 	BindIP::setIPAddressBinds();
-	BindIP binder = BindIP();
-	multicast_stream = binder.multicast_stream;
-	unicast_streams = &binder.unicast_streams;
+	binder = new BindIP();
+	forwardBinder = new BindIP();
 	
 	// Detects and connects to Wiimotes
 	MotiveClient::checkForWiimotes();
@@ -246,12 +256,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		case 'u':
 			cout << "\nEnter IP for connection: ";
 			getline(cin, ip);
-<<<<<<< HEAD
-			PacketGroup::AddUnicastIP(ip,  &binder.unicast_streams);
-=======
 			AddUnicastIP(ip);
-			PacketGroup::AddUnicastIP(ip);
->>>>>>> 123d0fec3958bce10491a96da6fc73d666646774
 			ipAddresses.push_back(ip);
 			cout << endl;
 			break;
