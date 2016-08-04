@@ -1,4 +1,4 @@
-#include "Constants.h"
+#include "BindIP.h"
 #include "Stream.h"
 #include <iostream>
 
@@ -6,6 +6,9 @@ using std::cout;
 using std::endl;
 
 Stream::Stream(PCSTR ip, int server_port, bool multicast) {
+
+	//if (!BindIP::IPsSet) { return; }
+
 	WSADATA wd;
 	WSAStartup(0x02, &wd);
 	int err;

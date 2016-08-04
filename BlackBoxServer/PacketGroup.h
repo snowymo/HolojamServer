@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include <mutex>
 #include <memory>
@@ -13,12 +14,13 @@
 #include <google/protobuf/reflection_ops.h>
 #include <google/protobuf/wire_format.h>
 #include <google/protobuf/arena.h>
-#include "Stream.h"
 
 using std::string;
 using std::vector;
 using std::mutex;
 using std::unique_ptr;
+
+class Stream;
 
 class PacketGroup {
 
@@ -28,8 +30,8 @@ class PacketGroup {
 		static vector<PacketGroup*> packet_groups;
 		//static mutex packet_groups_lock;
 		//static char buffer[max_packet_bytes];
-		static Stream PacketGroup::multicast_stream;
-		static vector<unique_ptr<Stream> > unicast_streams;
+		//static Stream PacketGroup::multicast_stream;
+		//static vector<unique_ptr<Stream> > unicast_streams;
 
 		// This static field should only be accessed by PacketGroup instances
 		// It should not be accessed by the static class, multiple threads,
@@ -61,7 +63,7 @@ class PacketGroup {
 		void addLiveObject(update_protocol_v3::LiveObject o, bool lhs);
 		void addLiveObject(string label, bool tracking_valid, float x, float y, float z, float qx, float qy, float qz, float qw, bool lhs, int button_bits, string extra_data);
 		update_protocol_v3::Update *getNextPacketToSend();
-		static void send();
+		static void send(Stream* multicast_stream, vector<Stream*>* unicast_streams);
 		static void queueHead(PacketGroup *newHead);
-		static void AddUnicastIP(string ip);
+		static void AddUnicastIP(string ip, vector<Stream*>* unicast_streams);
 };

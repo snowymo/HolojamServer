@@ -10,7 +10,7 @@ Includes some code from OptiTrack.
 #include <conio.h>
 #include "MotiveClient.h"
 #include "update_protocol_v3.pb.h"
-#include "Constants.h"
+#include "BindIP.h"
 
 using std::thread;
 using std::cout;
@@ -26,10 +26,13 @@ void cleanIPs();
 
 FILE* fp;
 vector<string> ipAddresses;
+Stream* multicast_stream;
+vector<Stream*>* unicast_streams;
+//BindIP binder;
 
 int PacketServingThread() {
 	while (true) {
-		PacketGroup::send();
+		PacketGroup::send(multicast_stream, unicast_streams);
 		Sleep(1);
 	}
 	return 0;
@@ -84,24 +87,6 @@ int PacketReceivingThread() {
 		stream.send(buf, update->ByteSize());
 		Sleep(1);
 	}
-	
-}
-
-void setIPAddressBinds() {
-	string tmp;
-	cout << "Enter multicast binding IP. Press enter for default (";
-	cout << BindIP::MULTICAST_BIND_IP << "):";
-	getline(cin, tmp);
-	if (tmp != "") {
-		BindIP::MULTICAST_BIND_IP = tmp;
-	}
-
-	cout << "Enter unicast binding IP. Press enter for default (";
-	cout << BindIP::UNICAST_BIND_IP << "):";
-	getline(cin, tmp);
-	if (tmp != "") {
-		BindIP::UNICAST_BIND_IP = tmp;
-	}
 }
 
 void initializeIPAddresses() {
@@ -113,7 +98,7 @@ void initializeIPAddresses() {
 		string ip;
 		while (!file.eof()) {
 			getline(file,ip);
-			PacketGroup::AddUnicastIP(ip);
+			PacketGroup::AddUnicastIP(ip, unicast_streams);
 			ipAddresses.push_back(ip);
 		}
 	}
@@ -218,7 +203,10 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	printf("== Holojam server =======---\n");
 
-	setIPAddressBinds();
+	BindIP::setIPAddressBinds();
+	BindIP binder = BindIP();
+	multicast_stream = binder.multicast_stream;
+	unicast_streams = &binder.unicast_streams;
 	
 	// Detects and connects to Wiimotes
 	MotiveClient::checkForWiimotes();
@@ -229,7 +217,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// Protobuf setup
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-	setupMotive();
+	//setupMotive();
 
 	int c;
 	bool bExit = false;
@@ -253,7 +241,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		case 'u':
 			cout << "\nEnter IP for connection: ";
 			getline(cin, ip);
-			PacketGroup::AddUnicastIP(ip);
+			PacketGroup::AddUnicastIP(ip,  &binder.unicast_streams);
 			ipAddresses.push_back(ip);
 			cout << endl;
 			break;

@@ -1,3 +1,4 @@
+#pragma once
 #include "../Include/NatNetTypes.h"
 #include "../Include/NatNetClient.h"
 #include "PacketGroup.h"

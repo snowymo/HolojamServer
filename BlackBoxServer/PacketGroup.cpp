@@ -1,5 +1,5 @@
 #include "PacketGroup.h"
-#include "Constants.h"
+#include "BindIP.h"
 #include <iostream>
 #include <string>
 
@@ -7,7 +7,6 @@ using std::cout;
 using std::endl;
 using std::getline;
 using std::cin;
-using std::unique_ptr;
 
 /* Initialize PacketGroup static fields */
 const int max_packet_bytes = 1300;
@@ -16,16 +15,16 @@ int PacketGroup::mod_version = 0;
 mutex PacketGroup::packet_groups_lock;
 char PacketGroup::buffer[max_packet_bytes];
 
-Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), PORT, true);
-vector<unique_ptr<Stream> > PacketGroup::unicast_streams = vector<unique_ptr<Stream> >();
-void PacketGroup::AddUnicastIP(string ip) {
-	for (int i = 0; i < unicast_streams.size(); ++i) {
-		if (unicast_streams.at(i)->getIP() == ip) {
+//Stream PacketGroup::multicast_stream = Stream(MULTICAST_IP.c_str(), PORT, true);
+//vector<unique_ptr<Stream> > PacketGroup::unicast_streams = vector<unique_ptr<Stream> >();
+void PacketGroup::AddUnicastIP(string ip, vector<Stream*>* unicast_streams) {
+	for (int i = 0; i < unicast_streams->size(); ++i) {
+		if (unicast_streams->at(i)->getIP() == ip) {
 			return;
 		}
 	}
-	unique_ptr<Stream> stream = unique_ptr<Stream>(new Stream(ip.c_str(), PORT, false));
-	unicast_streams.push_back(std::move(stream));
+	Stream* stream = new Stream(ip.c_str(), PORT, false);
+	unicast_streams->push_back(stream);
 }
 
 update_protocol_v3::Update* PacketGroup::newPacket() {
@@ -102,7 +101,7 @@ update_protocol_v3::Update* PacketGroup::getNextPacketToSend() {
 
 /* Packet group oriented methods */
 /* These methods are thread safe and operator on packets that should not be modified */
-void PacketGroup::send() {
+void PacketGroup::send(Stream* multicast_stream, vector<Stream*>* unicast_streams) {
 	// Ensure a packet group exists to send
 	if (packet_groups.size() == 0) {
 		return;
@@ -120,9 +119,9 @@ void PacketGroup::send() {
 	packet->SerializePartialToArray(buffer, max_packet_bytes);
 
 	// Send the buffer
-	multicast_stream.send(buffer, packet->ByteSize());
-	for (int i = 0; i < unicast_streams.size(); i++) {
-		unicast_streams[i]->send(buffer, packet->ByteSize());
+	multicast_stream->send(buffer, packet->ByteSize());
+	for (int i = 0; i < unicast_streams->size(); i++) {
+		(*unicast_streams)[i]->send(buffer, packet->ByteSize());
 	}
 	if (head->all_sent) {
 		packet_groups.push_back(head);
