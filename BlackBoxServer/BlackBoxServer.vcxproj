@@ -155,7 +155,7 @@
     <ClInclude Include="..\Include\NatNetRepeater.h" />
     <ClInclude Include="..\Include\NatNetServer.h" />
     <ClInclude Include="..\Include\NatNetTypes.h" />
-    <ClInclude Include="Constants.h" />
+    <ClInclude Include="BindIP.h" />
     <ClInclude Include="MotiveClient.h" />
     <ClInclude Include="PacketGroup.h" />
     <ClInclude Include="stdafx.h" />

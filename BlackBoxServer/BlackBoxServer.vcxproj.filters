@@ -57,7 +57,7 @@
     <ClInclude Include="MotiveClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Constants.h">
+    <ClInclude Include="BindIP.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
