@@ -8,7 +8,7 @@ using std::getline;
 using std::cin;
 
 string BindIP::MULTICAST_BIND_IP = "192.168.1.44";
-string BindIP::UNICAST_BIND_IP = "192.168.1.44";
+string BindIP::UNICAST_BIND_IP = "128.122.47.161";
 bool BindIP::IPsSet = false;
 
 void BindIP::setIPAddressBinds() {
