@@ -216,6 +216,7 @@ void MotiveClient::checkForWiimotes() {
 	{
 		wiimote *next = new wiimote;
 		if (!next->Connect(wiimote::FIRST_AVAILABLE)) {
+			delete next;
 			break;
 		}
 		detected += 1;

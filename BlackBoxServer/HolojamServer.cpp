@@ -91,6 +91,7 @@ int PacketReceivingThread() {
 		for (int i = 0; i < forwardBinder->unicast_streams.size(); i++) {
 			forwardBinder->unicast_streams[i]->send(buf, update->ByteSize());
 		}
+		delete(update);
 		Sleep(1);
 	}
 }
