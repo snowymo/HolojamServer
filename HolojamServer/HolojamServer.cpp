@@ -75,14 +75,22 @@ int PacketReceivingThread() {
 	forwardBinder->multicast_stream = new Stream(MULTICAST_IP.c_str(), PORT, true);
 	
 	while (true) {
-		int addr_len = sizeof(addr);
-		int recv_status = recvfrom(soc, buf, len, flags, (sockaddr*)&addr, &addr_len);
+		sockaddr_in from_addr;
+		int from_addr_len = sizeof(from_addr);
+		int recv_status = recvfrom(soc, buf, len, flags, (sockaddr*)&from_addr, &from_addr_len);
 		if (recv_status == SOCKET_ERROR) {
 			cout << "Error in Receiving: " << WSAGetLastError() << endl;
 		}
 		
 		update_protocol_v3::Update *update = new update_protocol_v3::Update();
 		update->ParseFromArray(buf, recv_status);
+		if (update->label() == "ping") {
+			char str[INET_ADDRSTRLEN];
+			if (inet_ntop(AF_INET, &(from_addr.sin_addr), str, INET_ADDRSTRLEN) != NULL) {
+				string s(str);
+				AddUnicastIP(str);
+			}
+		}
 
 		forwardBinder->multicast_stream->send(buf, update->ByteSize());
 		for (int i = 0; i < forwardBinder->unicast_streams.size(); i++) {
