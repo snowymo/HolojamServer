@@ -1,5 +1,6 @@
-
 #pragma once
+#ifndef __NATNETCLIENT__H
+#define __NATNETCLIENT__H
 
 class ClientCore;
 
@@ -45,3 +46,4 @@ private:
     int m_iConnectionType;
 
 };
+#endif

@@ -1,4 +1,7 @@
 #pragma once
+#ifndef __PACKETGROUP__H
+#define __PACKETGROUP__H
+
 #include <condition_variable>
 #include <vector>
 #include <mutex>
@@ -29,10 +32,6 @@ class PacketGroup {
 		/* static fields */
 		const static int max_packet_bytes = 1300;
 		static vector<PacketGroup*> packet_groups;
-		//static mutex packet_groups_lock;
-		//static char buffer[max_packet_bytes];
-		//static Stream PacketGroup::multicast_stream;
-		//static vector<unique_ptr<Stream> > unicast_streams;
 
 		// This static field should only be accessed by PacketGroup instances
 		// It should not be accessed by the static class, multiple threads,
@@ -68,4 +67,6 @@ class PacketGroup {
 		static void send(Stream* multicast_stream, vector<Stream*>* unicast_streams);
 		static void queueHead(PacketGroup *newHead);
 		static void AddUnicastIP(string ip, vector<Stream*>* unicast_streams);
+		~PacketGroup();
 };
+#endif

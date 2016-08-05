@@ -154,3 +154,14 @@ void PacketGroup::queueHead(PacketGroup *newHead) {
 		packet_groups.push_back(newHead);
 	}
 }
+
+PacketGroup::~PacketGroup() {
+	vector<update_protocol_v3::Update * > ::iterator next_packet;
+	{
+		auto it = packets.begin();
+		for (; it != packets.end();) {
+			delete * it;
+			it = packets.erase(it);
+		}
+	}
+}

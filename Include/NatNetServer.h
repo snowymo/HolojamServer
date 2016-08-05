@@ -1,6 +1,6 @@
-
 #pragma once
-
+#ifndef __NATNETSERVER__H
+#define __NATNETSERVER__H
 class ServerCore;
 class UnicastServerCore;
 
@@ -42,3 +42,4 @@ private:
     //UnicastServerCore* m_pUnicastServerCore;
     //int m_iServerType;
 };
+#endif

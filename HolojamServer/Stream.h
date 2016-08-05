@@ -1,4 +1,7 @@
 #pragma once
+#ifndef __STREAM__H
+#define __STREAM__H
+
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <string>
@@ -16,3 +19,4 @@ public:
 	string getIP();
 	~Stream();
 };
+#endif

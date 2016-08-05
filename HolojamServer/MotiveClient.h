@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __MOTIVECLIENT__H
+#define __MOTIVECLIENT__H
 #include "../Include/NatNetTypes.h"
 #include "../Include/NatNetClient.h"
 #include "PacketGroup.h"
@@ -34,3 +36,4 @@ class MotiveClient {
 		static char *mote_id_to_label(QWORD id);
 		static void checkForWiimotes();
 };
+#endif

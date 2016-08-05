@@ -33,3 +33,12 @@ BindIP::BindIP() {
 	multicast_stream = new Stream(MULTICAST_IP.c_str(), PORT, true);
 	unicast_streams = vector<Stream*>();
 }
+
+BindIP::~BindIP() {
+	delete multicast_stream;
+	auto it = unicast_streams.begin();
+	for (; it != unicast_streams.end();) {
+		delete * it;
+		it = unicast_streams.erase(it);
+	}
+}

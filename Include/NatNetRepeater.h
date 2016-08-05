@@ -1,6 +1,6 @@
-
 #pragma once
-
+#ifndef __NATNETREPEATER__H
+#define __NATNETREPEATER__H
 //=============================================================================----
 // Copyright © NaturalPoint, Inc. All Rights Reserved.
 // 
@@ -47,3 +47,4 @@ private:
 
     bool   StreamPacket(unsigned char *Buffer, int BufferSize);
 };
+#endif

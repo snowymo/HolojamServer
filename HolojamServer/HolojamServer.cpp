@@ -8,7 +8,6 @@ Includes some code from OptiTrack.
 #include <iostream>
 #include <thread>
 #include <conio.h>
-#include <condition_variable>
 #include "MotiveClient.h"
 #include "update_protocol_v3.pb.h"
 #include "BindIP.h"
@@ -25,9 +24,7 @@ int PacketServingThread();
 int PacketReceivingThread();
 void cleanIPs();
 void AddUnicastIP(string ip);
-//vector<unique_ptr<Stream> > b_unicast_streams = vector<unique_ptr<Stream> >();
 
-FILE* fp;
 vector<string> ipAddresses;
 
 BindIP* binder;
@@ -94,6 +91,7 @@ int PacketReceivingThread() {
 		delete(update);
 		Sleep(1);
 	}
+	free(buf);
 }
 
 void AddUnicastIP(string ip) {
@@ -218,7 +216,7 @@ void setupMotive() {
 		printf("[VRServer3] Received: %s", (char*)response);
 	}
 	MotiveClient::GetDataDescriptions();
-
+	delete response;
 	printf("\nServer is connected to Motive and listening for data...\n");
 }
 
@@ -312,6 +310,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		packet_receiving_thread.detach();
 		packet_serving_thread.detach();
 	}
+	delete binder;
+	delete forwardBinder;
 	MotiveClient::theClient->Uninitialize();
 	return ErrorCode_OK;
 }

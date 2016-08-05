@@ -158,7 +158,6 @@
     <ClInclude Include="BindIP.h" />
     <ClInclude Include="MotiveClient.h" />
     <ClInclude Include="PacketGroup.h" />
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="Stream.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="update_protocol_v3.pb.h" />
@@ -171,12 +170,6 @@
     <ClCompile Include="HolojamServer.cpp" />
     <ClCompile Include="MotiveClient.cpp" />
     <ClCompile Include="PacketGroup.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Stream.cpp" />
     <ClCompile Include="update_protocol_v3.pb.cc" />
     <ClCompile Include="wiimote.cpp" />

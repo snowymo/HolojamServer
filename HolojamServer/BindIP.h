@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __BINDIP__H
+#define __BINDIP__H
 #include <memory>
 #include <string>
 #include <vector>
@@ -25,5 +27,6 @@ public:
 	// Set IP method
 	static void setIPAddressBinds();
 	BindIP();
-	//virtual ~BindIP();
+	virtual ~BindIP();
 };
+#endif
