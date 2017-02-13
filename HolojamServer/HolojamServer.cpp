@@ -81,7 +81,7 @@ int PacketReceivingThread() {
 		if (recv_status == SOCKET_ERROR) {
 			cout << "Error in Receiving: " << WSAGetLastError() << endl;
 		}
-		
+		//TODO
 		update_protocol_v3::Update *update = new update_protocol_v3::Update();
 		update->ParseFromArray(buf, recv_status);
 		if (update->label() == "ping") {

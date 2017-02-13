@@ -23,6 +23,7 @@ void PacketGroup::AddUnicastIP(string ip, vector<Stream*>* unicast_streams) {
 	unicast_streams->push_back(stream);
 }
 
+//TODO
 update_protocol_v3::Update* PacketGroup::newPacket() {
 	update_protocol_v3::Update *packet = new update_protocol_v3::Update();
 	addPacket(packet);
@@ -35,6 +36,7 @@ PacketGroup::PacketGroup(int _timestamp, bool _recording, bool _models_changed, 
 	models_changed = _models_changed;
 	label = _label;
 	all_sent = false;
+	//TODO
 	packets = vector<update_protocol_v3::Update * >();
 	// Add the first packet
 	update_protocol_v3::Update *packet = newPacket();
@@ -42,6 +44,7 @@ PacketGroup::PacketGroup(int _timestamp, bool _recording, bool _models_changed, 
 	// Start the iterator
 	next_packet = packets.begin();
 }
+//TODO
 void PacketGroup::addPacket(update_protocol_v3::Update *packet) {
 	packet->set_mod_version(mod_version++);
 	packet->set_time(timestamp);
@@ -50,11 +53,13 @@ void PacketGroup::addPacket(update_protocol_v3::Update *packet) {
 	next_packet = packets.begin();
 }
 
+//TODO
 void PacketGroup::addLiveObject(update_protocol_v3::LiveObject o, bool lhs) {
 	addLiveObject(o.label(), true, o.x(), o.y(), o.z(), o.qx(), o.qy(), o.qz(), o.qw(), lhs, o.button_bits(), o.extra_data());
 }
 
 void PacketGroup::addLiveObject(string label, bool tracking_valid, float x, float y, float z, float qx, float qy, float qz, float qw, bool lhs, int button_bits, string extra_data) {
+	//TODO
 	update_protocol_v3::LiveObject *liveObj = new update_protocol_v3::LiveObject();
 
 	liveObj->set_label(label);
@@ -83,6 +88,7 @@ void PacketGroup::addLiveObject(string label, bool tracking_valid, float x, floa
 	assert(current_packet->ByteSize() < max_packet_bytes + 100);
 }
 
+//TODO
 update_protocol_v3::Update* PacketGroup::getNextPacketToSend() {
 	assert(packets.size() > 0);
 	update_protocol_v3::Update *packet = *next_packet;
@@ -111,6 +117,7 @@ void PacketGroup::send(Stream* multicast_stream, vector<Stream*>* unicast_stream
 		if (head->packets.size() == 0) {
 			return;
 		}
+		//TODO
 		update_protocol_v3::Update *packet = head->getNextPacketToSend();
 		assert(packet->ByteSize() < max_packet_bytes + 128);
 		packet->SerializePartialToArray(buffer, max_packet_bytes);
@@ -143,6 +150,7 @@ void PacketGroup::queueHead(PacketGroup *newHead) {
 		for (int i = indexes_to_delete.size() - 1; i >= 0; i--) {
 			int group_index = indexes_to_delete[i];
 			PacketGroup *pg = packet_groups[group_index];
+			//TODO
 			for (int pi = pg->packets.size() - 1; pi >= 0; pi--) {
 				update_protocol_v3::Update *p = pg->packets[pi];
 				delete(p);
@@ -156,6 +164,7 @@ void PacketGroup::queueHead(PacketGroup *newHead) {
 }
 
 PacketGroup::~PacketGroup() {
+	//TODO
 	vector<update_protocol_v3::Update * > ::iterator next_packet;
 	{
 		auto it = packets.begin();

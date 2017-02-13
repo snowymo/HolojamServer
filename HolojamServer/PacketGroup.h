@@ -38,6 +38,7 @@ class PacketGroup {
 		// or more than one packet group... for now.
 		static int mod_version;
 		/* instance fields */
+		//TODO
 		google::protobuf::Arena arena;
 		vector<update_protocol_v3::Update * > packets;
 		vector<update_protocol_v3::Update * > ::iterator next_packet;
