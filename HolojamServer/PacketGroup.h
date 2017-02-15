@@ -19,6 +19,8 @@
 #include <google/protobuf/wire_format.h>
 #include <google/protobuf/arena.h>
 
+#include "Packet.h"
+
 using std::string;
 using std::vector;
 using std::mutex;
@@ -39,9 +41,11 @@ class PacketGroup {
 		static int mod_version;
 		/* instance fields */
 		//TODO
-		google::protobuf::Arena arena;
-		vector<update_protocol_v3::Update * > packets;
-		vector<update_protocol_v3::Update * > ::iterator next_packet;
+		//google::protobuf::Arena arena;
+		//vector<update_protocol_v3::Update * > packets;
+		vector<Packet*> purePackets;
+		//vector<update_protocol_v3::Update * > ::iterator next_packet;
+		vector<Packet*>::iterator next_purePacket;
 		int timestamp;
 		bool recording;
 		bool models_changed;
@@ -49,6 +53,7 @@ class PacketGroup {
 		bool all_sent;
 		/* private instance methods */
 		update_protocol_v3::Update *newPacket();
+		Packet* newPurePacket();
 
 	public:
 		/* PacketGroup instance methods allow a user to construct and fill a PacketGroup.
@@ -60,11 +65,14 @@ class PacketGroup {
 		static std::mutex packet_groups_lock;
 		static std::condition_variable cv;
 		static char buffer[max_packet_bytes];
-		PacketGroup(int _timestamp, bool _recording, bool _models_changed, string _label);
+		PacketGroup(int _timestamp, bool _recording, bool _models_changed, string _label,bool v=false);
 		void addPacket(update_protocol_v3::Update *packet);
-		void addLiveObject(update_protocol_v3::LiveObject o, bool lhs);
+		void addPacket(Packet* packet);
+		//void addLiveObject(update_protocol_v3::LiveObject o, bool lhs);
 		void addLiveObject(string label, bool tracking_valid, float x, float y, float z, float qx, float qy, float qz, float qw, bool lhs, int button_bits, string extra_data);
+		void addLiveObject(LiveObject* obj, bool lhs);
 		update_protocol_v3::Update *getNextPacketToSend();
+		Packet* getNextPacket2Send();
 		static void send(Stream* multicast_stream, vector<Stream*>* unicast_streams);
 		static void queueHead(PacketGroup *newHead);
 		static void AddUnicastIP(string ip, vector<Stream*>* unicast_streams);

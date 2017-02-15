@@ -36,7 +36,8 @@ Stream::Stream(PCSTR ip, int server_port, bool multicast) {
 	handleError(err/*, string */);
 
 	bind_addr.sin_port = 0;
-	err = ::bind(s, (struct sockaddr *)&bind_addr, sizeof(bind_addr));
+	bind_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	err = bind(s, (struct sockaddr *)&bind_addr, sizeof(bind_addr));
 	handleError(err/*, string */);
 
 	memset(&addr, 0, sizeof(addr));

@@ -1,4 +1,5 @@
 #include "MotiveClient.h"
+#include "Packet.h"
 #include <iostream>
 
 using std::cout;
@@ -101,7 +102,8 @@ void MotiveClient::HandleNatNetPacket(sFrameOfMocapData *data, void *pUserData)
 	NatNetClient* pClient = (NatNetClient*)pUserData;
 	bool bIsRecording = data->params & 0x01;
 	bool bTrackedModelsChanged = data->params & 0x02;
-	PacketGroup *pg = new PacketGroup((int)(data->fTimestamp * 1000), false, true, "motive");
+	//TODO
+	PacketGroup *pg = new PacketGroup((int)(data->fTimestamp * 1000), false, true, "motive",true);
 
 	// Rigid Bodies
 	for (int i = 0; i < data->nRigidBodies; i++)
@@ -115,13 +117,20 @@ void MotiveClient::HandleNatNetPacket(sFrameOfMocapData *data, void *pUserData)
 			button_bits = motes[label]->Button.Bits;
 		}
 
-		pg->addLiveObject(idToLabel[rb.ID],
-			rb.params & 0x01, // tracking valid param
+// 		pg->addLiveObject(idToLabel[rb.ID],
+// 			rb.params & 0x01, // tracking valid param
+// 			rb.x, rb.y, rb.z,
+// 			rb.qx, rb.qy, rb.qz, rb.qw,
+// 			true,
+// 			button_bits,
+// 			"");
+
+		pg->addLiveObject(new LiveObject(idToLabel[rb.ID],
+			bool(rb.params & 0x01), // tracking valid param
 			rb.x, rb.y, rb.z,
 			rb.qx, rb.qy, rb.qz, rb.qw,
-			true,
-			button_bits,
-			"");
+			button_bits,""),
+			true);
 	}
 	/* TODO: Implement Skeleton and Stray Markers later */
 	/*

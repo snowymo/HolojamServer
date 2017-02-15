@@ -60,8 +60,9 @@ int PacketReceivingThread() {
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(PORT);
 	addr.sin_addr.s_addr = INADDR_ANY;
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	int conn = ::bind(soc, (sockaddr*)&addr, sizeof(addr));
+	int conn = bind(soc, (sockaddr*)&addr, sizeof(addr));
 	if (conn == SOCKET_ERROR){
 		cout << "Error - when connecting " << WSAGetLastError() << endl;
 		closesocket(soc);
@@ -83,6 +84,7 @@ int PacketReceivingThread() {
 		}
 		//TODO
 		update_protocol_v3::Update *update = new update_protocol_v3::Update();
+		//decode
 		update->ParseFromArray(buf, recv_status);
 		if (update->label() == "ping") {
 			char str[INET_ADDRSTRLEN];
