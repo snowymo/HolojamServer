@@ -3,6 +3,7 @@
 #include "Packet.h"
 #include <iostream>
 #include <iomanip>
+#include <stdint.h>
 
 Packet::Packet()
 {
@@ -102,31 +103,58 @@ int LiveObject::ByteSize()
 	return _totalSize;
 }
 
+// void LiveObject::write2stream()
+// {
+// // 	float f = 0.5f;
+// // 	std::string sf;
+// // 	char *p = reinterpret_cast< char *>(&f);
+// // 	int l = sizeof(float);
+// // 	for (std::size_t i = 0; i != sizeof(float); i++){
+// // 		std::printf("0x%02X\n", p[i]);
+// // 	}
+// // 	_x = _y = _z = 999.9999f;
+// // 	_qx = _qy = _qz = _qw = 999.9999f;
+// 	_stream.clear();
+// 	// size of label + label + xyz qxqyqzqw with precision(4) + bool + int + string
+// 	_stream << _label.size() << _label;
+// 	_stream << _x << "f" << _y << "f" << _z << "f";
+// 	_stream << _qx << "f" << _qy << "f" << _qz << "f" << _qw << "f";
+// 	_stream << _tracking_valid;
+// 	_stream << _button_bits;
+// 	_stream << _extra_data;
+// 	_stream << "="; // as an end
+// 	//_totalSize = _stream.str().size();
+// 	_stream >> _stringbuffer;
+// 	_totalSize += _stringbuffer.size();
+// }
+
 void LiveObject::write2stream()
 {
-	float f = 0.5f;
-	std::string sf;
-	char *p = reinterpret_cast< char *>(&f);
-	int l = sizeof(float);
-	for (std::size_t i = 0; i != sizeof(float); i++){
-		std::printf("0x%02X\n", p[i]);
-	}
-// 	_x = _y = _z = 999.9999f;
-// 	_qx = _qy = _qz = _qw = 999.9999f;
+// 	float f = 0.5f;
+// 	std::string sf;
+// 	char *p = reinterpret_cast<char *>(&f);
+// 	int l = sizeof(float);
+// 	for (std::size_t i = 0; i != sizeof(float); i++){
+// 		std::printf("0x%02X\n", p[i]);
+// 	}
+
 	_stream.clear();
-	// size of label + label + xyz qxqyqzqw with precision(4) + bool + int + string
-	_stream << _label.size() << _label;
-	//_stream << std::fixed << std::setprecision(4) << _x << _y << _z;
-// 	_stream << "0x" << std::setfill('0') << std::setw(2) << _x;// << _y << _z;
-// 	_stream << "0x" << std::setfill('0') << std::setw(4) << _x;// << _y << _z;
-	_stream << _x << "f" << _y << "f" << _z << "f";
-	_stream << _qx << "f" << _qy << "f" << _qz << "f" << _qw << "f";
-	_stream << _tracking_valid;
-	_stream << _button_bits;
-	_stream << _extra_data;
-	_stream << "="; // as an end
-	//_totalSize = _stream.str().size();
-	_stream >> _stringbuffer;
+	// size of label + label + xyz qxqyqzqw + bool + int + string
+	uint32_t lsize = _label.size();
+	_stream.write(reinterpret_cast<const char *>(&lsize),4);
+	_stringbuffer = _stream.str() + _label;
+	std::stringstream().swap(_stream);
+	_stream.write(reinterpret_cast<const char *>(&_x), 8);
+	_stream.write(reinterpret_cast<const char *>(&_y), 8);
+	_stream.write(reinterpret_cast<const char *>(&_z), 8);
+	_stream.write(reinterpret_cast<const char *>(&_qx), 8);
+	_stream.write(reinterpret_cast<const char *>(&_qy), 8);
+	_stream.write(reinterpret_cast<const char *>(&_qz), 8);
+	_stream.write(reinterpret_cast<const char *>(&_qw), 8);
+	_stream.write(reinterpret_cast<const char *>(&_tracking_valid), 1);
+	_stream.write(reinterpret_cast<const char *>(&_button_bits), 4);
+	_stringbuffer += _stream.str() + _extra_data + "=";// as an end
+	
 	_totalSize += _stringbuffer.size();
 }
 
