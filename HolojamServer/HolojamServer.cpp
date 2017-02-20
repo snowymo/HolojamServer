@@ -9,7 +9,7 @@ Includes some code from OptiTrack.
 #include <thread>
 #include <conio.h>
 #include "MotiveClient.h"
-#include "update_protocol_v3.pb.h"
+//#include "update_protocol_v3.pb.h"
 #include "BindIP.h"
 
 using std::thread;
@@ -21,7 +21,7 @@ using std::getline;
 #pragma warning( disable : 4996 )
 
 int PacketServingThread();
-int PacketReceivingThread();
+//int PacketReceivingThread();
 void cleanIPs();
 void AddUnicastIP(string ip);
 
@@ -38,71 +38,71 @@ int PacketServingThread() {
 	return 0;
 }
 
-int PacketReceivingThread() {
-	WSAData version;        //We need to check the version.
-	WORD mkword = MAKEWORD(2, 2);
-	int what = WSAStartup(mkword, &version);
-	if (what != 0){
-		cout << "This version is not supported! - \n" << WSAGetLastError() << endl;
-	}
-
-	SOCKET soc = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	
-	BOOL sockoptval = TRUE;
-	int sockoptres = setsockopt(soc, SOL_SOCKET, SO_REUSEADDR, (char*)&sockoptval, sizeof(BOOL));
-	if (sockoptres != 0) {
-		cout << "Error in Setting Socket Option: " << WSAGetLastError() << endl;
-	}
-	if (soc == INVALID_SOCKET)
-		cout << "Creating socket fail\n";
-	
-	sockaddr_in addr;
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(PORT);
-	addr.sin_addr.s_addr = INADDR_ANY;
-	addr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-	int conn = bind(soc, (sockaddr*)&addr, sizeof(addr));
-	if (conn == SOCKET_ERROR){
-		cout << "Error - when connecting " << WSAGetLastError() << endl;
-		closesocket(soc);
-		WSACleanup();
-	}
-	
-	int len = 65507;
-	char *buf = (char*)malloc(sizeof(char) * len);
-	int flags = 0;
-
-	forwardBinder->multicast_stream = new Stream(MULTICAST_IP.c_str(), PORT, true);
-	
-	while (true) {
-		sockaddr_in from_addr;
-		int from_addr_len = sizeof(from_addr);
-		int recv_status = recvfrom(soc, buf, len, flags, (sockaddr*)&from_addr, &from_addr_len);
-		if (recv_status == SOCKET_ERROR) {
-			cout << "Error in Receiving: " << WSAGetLastError() << endl;
-		}
-		//TODO
-		update_protocol_v3::Update *update = new update_protocol_v3::Update();
-		//decode
-		update->ParseFromArray(buf, recv_status);
-		if (update->label() == "ping") {
-			char str[INET_ADDRSTRLEN];
-			if (inet_ntop(AF_INET, &(from_addr.sin_addr), str, INET_ADDRSTRLEN) != NULL) {
-				string s(str);
-				AddUnicastIP(str);
-			}
-		}
-
-		forwardBinder->multicast_stream->send(buf, update->ByteSize());
-		for (int i = 0; i < forwardBinder->unicast_streams.size(); i++) {
-			forwardBinder->unicast_streams[i]->send(buf, update->ByteSize());
-		}
-		delete(update);
-		Sleep(1);
-	}
-	free(buf);
-}
+// int PacketReceivingThread() {
+// 	WSAData version;        //We need to check the version.
+// 	WORD mkword = MAKEWORD(2, 2);
+// 	int what = WSAStartup(mkword, &version);
+// 	if (what != 0){
+// 		cout << "This version is not supported! - \n" << WSAGetLastError() << endl;
+// 	}
+// 
+// 	SOCKET soc = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+// 	
+// 	BOOL sockoptval = TRUE;
+// 	int sockoptres = setsockopt(soc, SOL_SOCKET, SO_REUSEADDR, (char*)&sockoptval, sizeof(BOOL));
+// 	if (sockoptres != 0) {
+// 		cout << "Error in Setting Socket Option: " << WSAGetLastError() << endl;
+// 	}
+// 	if (soc == INVALID_SOCKET)
+// 		cout << "Creating socket fail\n";
+// 	
+// 	sockaddr_in addr;
+// 	addr.sin_family = AF_INET;
+// 	addr.sin_port = htons(PORT);
+// 	addr.sin_addr.s_addr = INADDR_ANY;
+// 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+// 
+// 	int conn = bind(soc, (sockaddr*)&addr, sizeof(addr));
+// 	if (conn == SOCKET_ERROR){
+// 		cout << "Error - when connecting " << WSAGetLastError() << endl;
+// 		closesocket(soc);
+// 		WSACleanup();
+// 	}
+// 	
+// 	int len = 65507;
+// 	char *buf = (char*)malloc(sizeof(char) * len);
+// 	int flags = 0;
+// 
+// 	forwardBinder->multicast_stream = new Stream(MULTICAST_IP.c_str(), PORT, true);
+// 	
+// 	while (true) {
+// 		sockaddr_in from_addr;
+// 		int from_addr_len = sizeof(from_addr);
+// 		int recv_status = recvfrom(soc, buf, len, flags, (sockaddr*)&from_addr, &from_addr_len);
+// 		if (recv_status == SOCKET_ERROR) {
+// 			cout << "Error in Receiving: " << WSAGetLastError() << endl;
+// 		}
+// 		//TODO
+// 		update_protocol_v3::Update *update = new update_protocol_v3::Update();
+// 		//decode
+// 		update->ParseFromArray(buf, recv_status);
+// 		if (update->label() == "ping") {
+// 			char str[INET_ADDRSTRLEN];
+// 			if (inet_ntop(AF_INET, &(from_addr.sin_addr), str, INET_ADDRSTRLEN) != NULL) {
+// 				string s(str);
+// 				AddUnicastIP(str);
+// 			}
+// 		}
+// 
+// 		forwardBinder->multicast_stream->send(buf, update->ByteSize());
+// 		for (int i = 0; i < forwardBinder->unicast_streams.size(); i++) {
+// 			forwardBinder->unicast_streams[i]->send(buf, update->ByteSize());
+// 		}
+// 		delete(update);
+// 		Sleep(1);
+// 	}
+// 	free(buf);
+// }
 
 void AddUnicastIP(string ip) {
 	for (int i = 0; i < forwardBinder->unicast_streams.size(); ++i) {
@@ -245,7 +245,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE) ConsoleHandler, true);
 
 	// Protobuf setup
-	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	//GOOGLE_PROTOBUF_VERIFY_VERSION;
 
 	setupMotive();
 
@@ -256,7 +256,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// Start the packet serving thread
 	thread packet_serving_thread(PacketServingThread);
-	thread packet_receiving_thread(PacketReceivingThread);
+	//thread packet_receiving_thread(PacketReceivingThread);
 
 	initializeIPAddresses();
 
@@ -317,7 +317,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// Done - clean up.
 	{
 		std::unique_lock < std::mutex > lck(PacketGroup::packet_groups_lock);
-		packet_receiving_thread.detach();
+		//packet_receiving_thread.detach();
 		packet_serving_thread.detach();
 	}
 	delete binder;

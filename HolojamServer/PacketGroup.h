@@ -7,17 +7,17 @@
 #include <mutex>
 #include <memory>
 
-#define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
-#include "update_protocol_v3.pb.h"
-#include <google/protobuf/stubs/common.h>
-#include <google/protobuf/stubs/once.h>
-#include <google/protobuf/io/coded_stream.h>
-#include <google/protobuf/wire_format_lite_inl.h>
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/generated_message_reflection.h>
-#include <google/protobuf/reflection_ops.h>
-#include <google/protobuf/wire_format.h>
-#include <google/protobuf/arena.h>
+// #define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
+// #include "update_protocol_v3.pb.h"
+// #include <google/protobuf/stubs/common.h>
+// #include <google/protobuf/stubs/once.h>
+// #include <google/protobuf/io/coded_stream.h>
+// #include <google/protobuf/wire_format_lite_inl.h>
+// #include <google/protobuf/descriptor.h>
+// #include <google/protobuf/generated_message_reflection.h>
+// #include <google/protobuf/reflection_ops.h>
+// #include <google/protobuf/wire_format.h>
+// #include <google/protobuf/arena.h>
 
 #include "Packet.h"
 
@@ -52,7 +52,7 @@ class PacketGroup {
 		string label;
 		bool all_sent;
 		/* private instance methods */
-		update_protocol_v3::Update *newPacket();
+		//update_protocol_v3::Update *newPacket();
 		Packet* newPurePacket();
 
 	public:
@@ -66,12 +66,12 @@ class PacketGroup {
 		static std::condition_variable cv;
 		static char buffer[max_packet_bytes];
 		PacketGroup(int _timestamp, bool _recording, bool _models_changed, string _label,bool v=false);
-		void addPacket(update_protocol_v3::Update *packet);
+		//void addPacket(update_protocol_v3::Update *packet);
 		void addPacket(Packet* packet);
 		//void addLiveObject(update_protocol_v3::LiveObject o, bool lhs);
 		void addLiveObject(string label, bool tracking_valid, float x, float y, float z, float qx, float qy, float qz, float qw, bool lhs, int button_bits, string extra_data);
 		void addLiveObject(LiveObject* obj, bool lhs);
-		update_protocol_v3::Update *getNextPacketToSend();
+		//update_protocol_v3::Update *getNextPacketToSend();
 		Packet* getNextPacket2Send();
 		static void send(Stream* multicast_stream, vector<Stream*>* unicast_streams);
 		static void queueHead(PacketGroup *newHead);

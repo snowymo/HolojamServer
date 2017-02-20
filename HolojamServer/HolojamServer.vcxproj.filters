@@ -42,9 +42,6 @@
     <ClInclude Include="wiimote_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="update_protocol_v3.pb.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PacketGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -63,9 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wiimote.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="update_protocol_v3.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HolojamServer.cpp">

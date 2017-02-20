@@ -1,12 +1,14 @@
-#include "PacketGroup.h"
-#include "BindIP.h"
 #include <iostream>
 #include <string>
+#include <assert.h>
+#include <stdio.h>
+#include "PacketGroup.h"
+#include "BindIP.h"
 
 using std::cout;
-using std::endl;
-using std::getline;
-using std::cin;
+// using std::endl;
+// using std::getline;
+// using std::cin;
 
 /* Initialize PacketGroup static fields */
 const int max_packet_bytes = 1300;
@@ -24,11 +26,11 @@ void PacketGroup::AddUnicastIP(string ip, vector<Stream*>* unicast_streams) {
 }
 
 //TODO
-update_protocol_v3::Update* PacketGroup::newPacket() {
-	update_protocol_v3::Update *packet = new update_protocol_v3::Update();
-	addPacket(packet);
-	return packet;
-}
+// update_protocol_v3::Update* PacketGroup::newPacket() {
+// 	update_protocol_v3::Update *packet = new update_protocol_v3::Update();
+// 	addPacket(packet);
+// 	return packet;
+// }
 //DONE
 Packet* PacketGroup::newPurePacket()
 {
@@ -44,30 +46,31 @@ PacketGroup::PacketGroup(int _timestamp, bool _recording, bool _models_changed, 
 	label = _label;
 	all_sent = false;
 
-	if (!v)	{	
+	//if (!v)	{	
 // 		packets = vector<update_protocol_v3::Update * >();
 // 		// Add the first packet
 // 		update_protocol_v3::Update *packet = newPacket();
 // 		assert(packet->ByteSize() < max_packet_bytes);
 // 		// Start the iterator
 // 		next_packet = packets.begin();
-	}
-	else{
+	//}
+	//else{
 		purePackets = vector<Packet*>();
-		Packet * packet = newPurePacket();
-		assert(packet->ByteSize() < max_packet_bytes);
+		Packet * purePacket = newPurePacket();
+		assert(purePacket->ByteSize() < max_packet_bytes);
 		// Start the iterator
 		next_purePacket = purePackets.begin();
-	}
+	//}
 }
 //TODO
-void PacketGroup::addPacket(update_protocol_v3::Update *packet) {
+// void PacketGroup::addPacket(update_
+//  col_v3::Update *packet) {
 // 	packet->set_mod_version(mod_version++);
 // 	packet->set_time(timestamp);
 // 	packet->set_label(label);
 // 	packets.push_back(packet);
 // 	next_packet = packets.begin();
-}
+// }
 //DONE
 void PacketGroup::addPacket(Packet *packet) {
 	packet->set_mod_version(mod_version++);
@@ -83,8 +86,8 @@ void PacketGroup::addPacket(Packet *packet) {
 // 	addLiveObject(o.label(), true, o.x(), o.y(), o.z(), o.qx(), o.qy(), o.qz(), o.qw(), lhs, o.button_bits(), o.extra_data());
 // }
 
-void PacketGroup::addLiveObject(string label, bool tracking_valid, float x, float y, float z, float qx, float qy, float qz, float qw, bool lhs, int button_bits, string extra_data) {
-	//TODO
+// void PacketGroup::addLiveObject(string label, bool tracking_valid, float x, float y, float z, float qx, float qy, float qz, float qw, bool lhs, int button_bits, string extra_data) {
+// 	//TODO
 // 	update_protocol_v3::LiveObject *liveObj = new update_protocol_v3::LiveObject();
 // 
 // 	liveObj->set_label(label);
@@ -111,7 +114,7 @@ void PacketGroup::addLiveObject(string label, bool tracking_valid, float x, floa
 // 	assert(current_packet->ByteSize() + liveObj->ByteSize() < max_packet_bytes + 100);
 // 	current_packet->mutable_live_objects()->AddAllocated(liveObj);
 // 	assert(current_packet->ByteSize() < max_packet_bytes + 100);
-}
+// }
 
 void PacketGroup::addLiveObject(LiveObject* obj,bool lhs)
 {
@@ -126,7 +129,7 @@ void PacketGroup::addLiveObject(LiveObject* obj,bool lhs)
 	assert(cur_packet->ByteSize() < max_packet_bytes + 100);
 }
 
-//TODO
+// TODO
 // update_protocol_v3::Update* PacketGroup::getNextPacketToSend() {
 // 	assert(packets.size() > 0);
 // 	update_protocol_v3::Update *packet = *next_packet;
@@ -170,25 +173,28 @@ void PacketGroup::send(Stream* multicast_stream, vector<Stream*>* unicast_stream
 		}
 		//TODO
 		//update_protocol_v3::Update *packet = head->getNextPacketToSend();
-		Packet* packet = head->getNextPacket2Send();
+		Packet* purePacket = head->getNextPacket2Send();
 
-		assert(packet->ByteSize() < max_packet_bytes + 128);
+		assert(purePacket->ByteSize() < max_packet_bytes + 128);
 
 		//packet->SerializePartialToArray(buffer, max_packet_bytes);
-		int bs = packet->ByteSize();
+		int bs = purePacket->ByteSize();
 		char* buf = new char[bs];
-		std::size_t length = packet->getStreamString().copy(buf, bs, 0);
+		std::size_t length = purePacket->getStreamString().copy(buf, bs, 0);
 		buf[length] = '\0';
 		//memcpy_s(buf, bs, packet->getStreamBuffer(), bs);
 		//buf = (char*)packet->getStreamBuffer();
 		std::cout << "size " << bs << "length " << length << "\n\n";
-		printf("buffer %s\n", buf);
+		printf("buf %s\n", buf);
 		//strcpy_s(buffer, bs, buf);
 		//printf("buffer %s\n", buffer);
 		// Send the buffer
-		multicast_stream->send(buf, packet->ByteSize());
+		multicast_stream->send(buf, bs);
+		//buffer[0] = 't';
+		
 		for (int i = 0; i < unicast_streams->size(); i++) {
-			(*unicast_streams)[i]->send(buffer, packet->ByteSize());
+			//(*unicast_streams)[i]->send(buffer, packet->ByteSize());
+			(*unicast_streams)[i]->send(buf, bs);
 		}
 		if (head->all_sent) {
 			packet_groups.push_back(head);
@@ -215,9 +221,12 @@ void PacketGroup::queueHead(PacketGroup *newHead) {
 			PacketGroup *pg = packet_groups[group_index];
 			//TODO
 			for (int pi = pg->purePackets.size() - 1; pi >= 0; pi--) {
-				//update_protocol_v3::Update *p = pg->packets[pi];
-				Packet *p = pg->purePackets[pi];
-				delete(p);
+// 				update_protocol_v3::Update *p = pg->packets[pi];
+// 				delete(p);
+// 				pg->packets.erase(pg->packets.begin() + pi);
+
+				Packet *p2 = pg->purePackets[pi];
+				delete(p2);
 				pg->purePackets.erase(pg->purePackets.begin() + pi);
 			}
 			delete(packet_groups[group_index]);

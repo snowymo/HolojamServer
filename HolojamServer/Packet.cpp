@@ -2,6 +2,7 @@
 
 #include "Packet.h"
 #include <iostream>
+#include <iomanip>
 
 Packet::Packet()
 {
@@ -32,19 +33,15 @@ int Packet::ByteSize()
 {
 	// member + liveObj count * liveobj size
 
-// 	for (int i = 0; i < _liveObjs.size(); i++){
-// 		_totalSize += _liveObjs[i]->ByteSize();
-// 	}
-
 	return _totalSize;
 }
 
 void Packet::write2stream()
 {
 	_stream.clear();
-	_stream << _label;
-	_stream << _mod_version;
-	_stream << _timestamp;
+	_stream << _label;	// motive
+	//_stream << _mod_version;
+	//_stream << _timestamp;
 	_stream >> _stringbuffer;
 	_totalSize += _stringbuffer.size();
 }
@@ -64,12 +61,8 @@ const char * Packet::getStreamBuffer()
 	//_stream >> st;
 	//std::string st(buffer);
 	for (int i = 0; i < _liveObjs.size(); i++){
-		//const char * b = 
-		//std::string stemp(b);
 		st += _liveObjs[i]->_stringbuffer;;
 	}
-	std::cout << "check st:" << st << "\n";
-	std::cout << "check buf:" << st.c_str() << "\n";
 	return st.c_str();
 }
 
@@ -81,12 +74,8 @@ std::string Packet::getStreamString()
 	//_stream >> st;
 	//std::string st(buffer);
 	for (int i = 0; i < _liveObjs.size(); i++){
-		//const char * b = 
-		//std::string stemp(b);
 		st += _liveObjs[i]->_stringbuffer;;
 	}
-	std::cout << "check st:" << st << "\n";
-	//std::cout << "check buf:" << st.c_str() << "\n";
 	return st;
 }
 
@@ -115,14 +104,27 @@ int LiveObject::ByteSize()
 
 void LiveObject::write2stream()
 {
-	//_stream.write(reinterpret_cast<const char*>(_x), 4);
+	float f = 0.5f;
+	std::string sf;
+	char *p = reinterpret_cast< char *>(&f);
+	int l = sizeof(float);
+	for (std::size_t i = 0; i != sizeof(float); i++){
+		std::printf("0x%02X\n", p[i]);
+	}
+// 	_x = _y = _z = 999.9999f;
+// 	_qx = _qy = _qz = _qw = 999.9999f;
 	_stream.clear();
-	_stream << "label:" << _label;
-	_stream << "x:" << _x << ",y:"<< _y << ",z:" << _z;
-	_stream << _qx << _qy << _qz << _qw;
+	// size of label + label + xyz qxqyqzqw with precision(4) + bool + int + string
+	_stream << _label.size() << _label;
+	//_stream << std::fixed << std::setprecision(4) << _x << _y << _z;
+// 	_stream << "0x" << std::setfill('0') << std::setw(2) << _x;// << _y << _z;
+// 	_stream << "0x" << std::setfill('0') << std::setw(4) << _x;// << _y << _z;
+	_stream << _x << "f" << _y << "f" << _z << "f";
+	_stream << _qx << "f" << _qy << "f" << _qz << "f" << _qw << "f";
 	_stream << _tracking_valid;
 	_stream << _button_bits;
 	_stream << _extra_data;
+	_stream << "="; // as an end
 	//_totalSize = _stream.str().size();
 	_stream >> _stringbuffer;
 	_totalSize += _stringbuffer.size();
