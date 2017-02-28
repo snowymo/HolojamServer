@@ -137,7 +137,7 @@ void LiveObject::write2stream()
 // 	for (std::size_t i = 0; i != sizeof(float); i++){
 // 		std::printf("0x%02X\n", p[i]);
 // 	}
-
+	//_button_bits = 1;
 	_stream.clear();
 	// size of label + label + xyz qxqyqzqw + bool + int + string
 	uint32_t lsize = _label.size();

@@ -184,8 +184,8 @@ void PacketGroup::send(Stream* multicast_stream, vector<Stream*>* unicast_stream
 		buf[length] = '\0';
 		//memcpy_s(buf, bs, packet->getStreamBuffer(), bs);
 		//buf = (char*)packet->getStreamBuffer();
-		std::cout << "size " << bs << "length " << length << "\n\n";
-		printf("buf %s\n", buf);
+		//std::cout << "size " << bs << "length " << length << "\n\n";
+		//printf("buf %s\n", buf);
 		//strcpy_s(buffer, bs, buf);
 		//printf("buffer %s\n", buffer);
 		// Send the buffer
